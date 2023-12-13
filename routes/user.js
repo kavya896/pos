@@ -1,7 +1,8 @@
 const express = require("express")
 const router = express.Router()
-const {Login} = require("../controllers/user")
+const {login, dishes, itemsByType} = require("../controllers/user")
 
-router.route("/").post(Login)
-
+router.route("/").post(login)
+router.route("/dishes").post(dishes)
+router.route("/itemType/:typeOfDishItem").get(itemsByType)
 module.exports = router
