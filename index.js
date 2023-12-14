@@ -11,16 +11,7 @@ mongoose.connect("mongodb+srv://kavyareddy:kavyareddy@cluster0.msabz.mongodb.net
 })
 
 
-app.post("/",async(req,res)=>{
-    try{
-        const {email,password} = req.body
-        const admin =await Admin.create({email,password}) 
-        await admin.save()
-        res.json({message:"admin logged-in successfully"})
-    }catch(err){
-        res.send(err)
-    }
-})
+
 
 app.listen(5000,(req,res)=>{
     console.log("port is running at 5000")

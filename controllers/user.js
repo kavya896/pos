@@ -8,7 +8,7 @@ exports.login = async(req,res) =>{
         if(user){
             if(user[0].password == password){
 
-                res.status(200).send({"user":user})
+                res.status(200).send(user)
             }else{
                 
                 res.status(400).send({message:"credencials doesn't match"})
@@ -16,6 +16,23 @@ exports.login = async(req,res) =>{
         }
     }catch(err){
         console.log(err)
+    }
+}
+
+
+exports.register = async(req,res)=>{
+    try{
+        const {name,role,email,password,pin} = req.body
+        const exists = await Admin.find({email})
+        if(exists.length>0){
+            res.status(400).send({message:"emailId already exists"})
+        }else{
+            const user = await Admin.create({name,role,email,password,pin})
+            await user.save()
+            res.status(200).send(user)
+        }
+    }catch(err){
+        res.send(err)
     }
 }
 

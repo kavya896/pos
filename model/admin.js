@@ -1,6 +1,14 @@
 const mongoose = require("mongoose")
 
 const schema = new mongoose.Schema({
+    name:{
+        type:String,
+        required:[true,"please enter name"]
+    },
+    role:{
+        type:String,
+        required:[true,"please enter role"]
+    },
     email:{
         type:String,
         required:[true,"Please enter email"]
@@ -9,6 +17,9 @@ const schema = new mongoose.Schema({
         type:String,
         required:[true,"please enter password"]
       
+    },
+    pin:{
+        type:Number
     }
 })
 
