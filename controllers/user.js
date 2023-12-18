@@ -1,5 +1,6 @@
 const Admin = require("../model/admin")
 const DishItem = require("../model/dishes")
+const Ingredient = require("../model/ingredient")
 
 exports.login = async(req,res) =>{
     try{
@@ -72,3 +73,33 @@ exports.itemsByType = async(req,res) =>{
         console.log(err)
     }
 } 
+
+
+exports.ingredient = async(req,res)=>{
+    try{
+        const {name,description,addtype}=req.body
+        const exists = await Ingredient.find({name})
+        if(exists.length>0){
+            res.status(400).send({message:"unit/category name already exists"})
+        }else{
+            const ingredient = await Ingredient.create({name,description,addtype})
+            await ingredient.save()
+            res.status(200).send(ingredient)
+        }
+    }catch(err){
+        res.status(400).send(err)
+    }
+}
+
+exports.listIngredientUnit = async(req,res)=>{
+    try{
+        const list = await Ingredient.find({addtype:"unit"})
+        if(list.length<0){
+            res.status(400).send({message:"List is empty"})
+        }else{
+            res.status(200).send(list.reverse())
+        }
+    }catch(err){
+        res.status(400).send(err)
+    }
+}
