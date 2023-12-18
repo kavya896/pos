@@ -4,6 +4,8 @@ const Ingredient = require("../model/ingredient")
 
 exports.login = async(req,res) =>{
     try{
+        const email=req.body.email
+        if(email){
         const {email,password} = req.body
         const user = await Admin.find({email})
         if(user){
@@ -15,6 +17,14 @@ exports.login = async(req,res) =>{
                 res.status(400).send({message:"credencials doesn't match"})
             }
         }
+    }else{
+        const user = await Admin.find({pin:req.body.pin})
+        if(user.length>0){
+            res.status(200).send(user)
+        }else{
+            res.status(400).send({message:"credencials doesn't match"})
+        }
+    }
     }catch(err){
         console.log(err)
     }
@@ -25,12 +35,22 @@ exports.register = async(req,res)=>{
     try{
         const {name,role,email,password,pin} = req.body
         const exists = await Admin.find({email})
+     
         if(exists.length>0){
             res.status(400).send({message:"emailId already exists"})
         }else{
-            const user = await Admin.create({name,role,email,password,pin})
-            await user.save()
-            res.status(200).send(user)
+           
+            const pinexists = await Admin.find({pin})
+            
+            if(pinexists.length>0){
+                
+            res.status(400).send({message:"pin already exists"})
+            }else{
+                const user = await Admin.create({name,role,email,password,pin})
+                await user.save()
+                res.status(200).send(user)
+            }
+           
         }
     }catch(err){
         res.send(err)
@@ -91,9 +111,9 @@ exports.ingredient = async(req,res)=>{
     }
 }
 
-exports.listIngredientUnit = async(req,res)=>{
+exports.listIngredientCategory = async(req,res)=>{
     try{
-        const list = await Ingredient.find({addtype:"unit"})
+        const list = await Ingredient.find({addtype:"category"})
         if(list.length<0){
             res.status(400).send({message:"List is empty"})
         }else{
