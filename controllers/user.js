@@ -1,4 +1,5 @@
 const Admin = require("../model/admin")
+const Category = require("../model/category")
 const DishItem = require("../model/dishes")
 const Ingredient = require("../model/ingredient")
 
@@ -57,69 +58,101 @@ exports.register = async(req,res)=>{
     }
 }
 
-exports.dishes = async(req,res) =>{
+exports.category = async(req,res)=>{
     try{
-        const {name,price,typeOfDishItem,image} = req.body
-        const exists = await DishItem.find({name:req.body.name})
-        console.log(exists.length)
-        if(exists.length>0){
-            res.status(400).json({message:"this item already exists"})
-        }else{
-            const dish = await DishItem.create({name,price,typeOfDishItem,image})
-            await dish.save()
-            res.status(200).json({message:"dish created successfully",dish})
-        }
+        const name = req.body.name
+        const exists = await Category.find({name})
         
-    }catch(err){
-        console.log(err)
-    }
-}
-
-exports.itemsByType = async(req,res) =>{
-    try{
-        if(req.query){
-            const items = await DishItem.find(req.query)
-            if(items.length>0){
-                res.status(200).json({listOfItems:items})
-            }else{
-                res.status(400).json({message:"no items of this type available now"})
-            }
-        }else{
-            const items = await DishItem.findAll({})
-            res.status(200).json({listOfItems:items})
-        }
-       
-    }catch(err){
-        console.log(err)
-    }
-} 
-
-
-exports.ingredient = async(req,res)=>{
-    try{
-        const {name,description,addtype}=req.body
-        const exists = await Ingredient.find({name})
         if(exists.length>0){
-            res.status(400).send({message:"unit/category name already exists"})
+           
+            res.status(400).send({message:"name already exists"})
         }else{
-            const ingredient = await Ingredient.create({name,description,addtype})
-            await ingredient.save()
-            res.status(200).send(ingredient)
+            
+            const category = await Category.create({name})
+            await category.save()
+            res.status(200).send(category)
         }
     }catch(err){
-        res.status(400).send(err)
+        console.log(err)
     }
 }
 
-exports.listIngredientCategory = async(req,res)=>{
+exports.categoryList = async(req,res) =>{
     try{
-        const list = await Ingredient.find({addtype:"category"})
-        if(list.length<0){
-            res.status(400).send({message:"List is empty"})
+        const list = await Category.find({})
+        if(list.length>0){
+            res.status(200).send(list)
         }else{
-            res.status(200).send(list.reverse())
+            res.status(400).send({message:"list is empty"})
         }
     }catch(err){
-        res.status(400).send(err)
+        console.log(err)
     }
 }
+
+// exports.dishes = async(req,res) =>{
+//     try{
+//         const {name,price,typeOfDishItem,image} = req.body
+//         const exists = await DishItem.find({name:req.body.name})
+//         console.log(exists.length)
+//         if(exists.length>0){
+//             res.status(400).json({message:"this item already exists"})
+//         }else{
+//             const dish = await DishItem.create({name,price,typeOfDishItem,image})
+//             await dish.save()
+//             res.status(200).json({message:"dish created successfully",dish})
+//         }
+        
+//     }catch(err){
+//         console.log(err)
+//     }
+// }
+
+// exports.itemsByType = async(req,res) =>{
+//     try{
+//         if(req.query){
+//             const items = await DishItem.find(req.query)
+//             if(items.length>0){
+//                 res.status(200).json({listOfItems:items})
+//             }else{
+//                 res.status(400).json({message:"no items of this type available now"})
+//             }
+//         }else{
+//             const items = await DishItem.findAll({})
+//             res.status(200).json({listOfItems:items})
+//         }
+       
+//     }catch(err){
+//         console.log(err)
+//     }
+// } 
+
+
+// exports.ingredient = async(req,res)=>{
+//     try{
+//         const {name,description,addtype}=req.body
+//         const exists = await Ingredient.find({name})
+//         if(exists.length>0){
+//             res.status(400).send({message:"unit/category name already exists"})
+//         }else{
+//             const ingredient = await Ingredient.create({name,description,addtype})
+//             await ingredient.save()
+//             res.status(200).send(ingredient)
+//         }
+//     }catch(err){
+//         res.status(400).send(err)
+//     }
+// }
+
+// exports.listIngredientCategory = async(req,res)=>{
+//     try{
+//         const list = await Ingredient.find({addtype:"category"})
+//         if(list.length<0){
+//             res.status(400).send({message:"List is empty"})
+//         }else{
+//             res.status(200).send(list.reverse())
+//         }
+//     }catch(err){
+//         res.status(400).send(err)
+//     }
+// }
