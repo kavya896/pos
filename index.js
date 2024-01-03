@@ -6,6 +6,7 @@ const Admin = require("./model/admin")
 app.use(cors())
 app.use(express.json())
 app.use("/api",require("./routes/user"))
+app.use("/api/v1",require("./routes/items"))
 mongoose.connect("mongodb+srv://kavyareddy:kavyareddy@cluster0.msabz.mongodb.net/pos").then(()=>{
     console.log("db is connected successfully")
 })

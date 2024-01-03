@@ -1,6 +1,6 @@
 const Admin = require("../model/admin")
 const Category = require("../model/category")
-const DishItem = require("../model/dishes")
+const DishItem = require("../model/item")
 const Ingredient = require("../model/ingredient")
 
 exports.login = async(req,res) =>{
