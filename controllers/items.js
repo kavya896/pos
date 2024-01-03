@@ -57,7 +57,7 @@ exports.Item = async(req,res) =>{
 
 exports.ItemList = async(req,res)=>{
     try{
-        const items = await Item.find({})
+        const items = await Item.find({}).limit(10)
         if(items.length>0){
 
            res.status(200).send(items)
@@ -71,14 +71,16 @@ exports.ItemList = async(req,res)=>{
 
 exports.pagination = async(req,res) =>{
     try{
-        const pageNo = req.body.pageNo
-        const rowsPerPage = req.body.rowsPerPage
+        const pageNo = req.query.pageNo
+        
+        const rowsPerPage = req.query.rowsPerPage
+        console.log(pageNo,rowsPerPage)
         const skipPages = ((pageNo-1)*rowsPerPage)
         console.log(skipPages)
             if(!pageNo && !rowsPerPage){
-                res.status(400).send({"message":"pageNo and rowsPerPage are required"})
+                res.json({"message":"pageNo and rowsPerPage are required"})
             }else{
-                const list = await Item.find({}).skip(skipPages).limit(rowsPerPage)
+                const list = await Item.find({}).limit(rowsPerPage).skip(skipPages)
             console.log("from pagination")
             res.send(list)
             }
