@@ -1,5 +1,8 @@
+
 const Category = require("../model/category")
 const Item = require("../model/item")
+const Stock = require("../model/stocks")
+
 exports.category = async (req, res) => {
     try {
         const { name, color, noOfItems } = req.body
@@ -96,6 +99,14 @@ exports.ItemList = async (req, res) => {
     }
 }
 
+exports.stocks = async(req,res)=>{
+    try{
+       const stock = await Stock.find({})
+       res.send(stock)
+    }catch(err){
+        console.log(err)
+    }
+}
 // exports.ItemList = async (req, res) => {
 //     try {
        
@@ -119,29 +130,6 @@ exports.ItemList = async (req, res) => {
 //                 res.send(items)
 //             }
         
-//     } catch (err) {
-//         res.status(400).send(err)
-//     }
-// }
-
-// exports.pagination = async (req, res) => {
-//     try {
-//         const pageNo = req.query.pageNo
-
-//         const rowsPerPage = req.query.rowsPerPage
-//         console.log(pageNo, rowsPerPage)
-//         const skipPages = (pageNo - 1) * rowsPerPage
-//         console.log(skipPages)
-//         if (!pageNo && !rowsPerPage) {
-//             res.json({ "message": "pageNo and rowsPerPage are required" })
-//         } else {
-//             const list = await Item.find({}).limit(rowsPerPage).skip(skipPages)
-//             console.log("from pagination")
-//             res.send(list)
-//         }
-
-
-
 //     } catch (err) {
 //         res.status(400).send(err)
 //     }
