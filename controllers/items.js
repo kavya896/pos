@@ -59,18 +59,31 @@ exports.ItemList = async (req, res) => {
     try {
        
         
-        if (req.query.pageNo) {
-                const pageNo = req.query.pageNo
+        if (req.query) {
+                const pageNo = req.query.pageNo || 1
+                const rowsPerPage = req.query.rowsPerPage || 10
+                const category = req.query.category || ""
+                const stocks = req.query.stocks || ""
+                const search = req.query.search || ""
+                
+                const query = {
+                    name: { $regex: search, $options: "i" }
+                }
+                if(category){
+                    query.category = category
+                }
+                if(stocks){
+                    query.inStock = stocks
+                }
 
-                const rowsPerPage = req.query.rowsPerPage
-                console.log(pageNo, rowsPerPage)
                 const skipPages = (pageNo - 1) * rowsPerPage
-                console.log(skipPages)
+                
                 if (!pageNo && !rowsPerPage) {
                     res.json({ "message": "pageNo and rowsPerPage are required" })
                 } else {
-                    const list = await Item.find({}).limit(rowsPerPage).skip(skipPages)
-                    console.log("from pagination")
+                    console.log(query)
+                    const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
+                    
                     res.send(list)
                 }
             }else{
@@ -83,25 +96,53 @@ exports.ItemList = async (req, res) => {
     }
 }
 
-exports.pagination = async (req, res) => {
-    try {
-        const pageNo = req.query.pageNo
+// exports.ItemList = async (req, res) => {
+//     try {
+       
+        
+//         if (req.query.pageNo) {
+//                 const pageNo = req.query.pageNo
 
-        const rowsPerPage = req.query.rowsPerPage
-        console.log(pageNo, rowsPerPage)
-        const skipPages = (pageNo - 1) * rowsPerPage
-        console.log(skipPages)
-        if (!pageNo && !rowsPerPage) {
-            res.json({ "message": "pageNo and rowsPerPage are required" })
-        } else {
-            const list = await Item.find({}).limit(rowsPerPage).skip(skipPages)
-            console.log("from pagination")
-            res.send(list)
-        }
+//                 const rowsPerPage = req.query.rowsPerPage
+//                 console.log(pageNo, rowsPerPage)
+//                 const skipPages = (pageNo - 1) * rowsPerPage
+//                 console.log(skipPages)
+//                 if (!pageNo && !rowsPerPage) {
+//                     res.json({ "message": "pageNo and rowsPerPage are required" })
+//                 } else {
+//                     const list = await Item.find({}).limit(rowsPerPage).skip(skipPages)
+//                     console.log("from pagination")
+//                     res.send(list)
+//                 }
+//             }else{
+//                 const items = await Item.find({}).limit(10)
+//                 res.send(items)
+//             }
+        
+//     } catch (err) {
+//         res.status(400).send(err)
+//     }
+// }
+
+// exports.pagination = async (req, res) => {
+//     try {
+//         const pageNo = req.query.pageNo
+
+//         const rowsPerPage = req.query.rowsPerPage
+//         console.log(pageNo, rowsPerPage)
+//         const skipPages = (pageNo - 1) * rowsPerPage
+//         console.log(skipPages)
+//         if (!pageNo && !rowsPerPage) {
+//             res.json({ "message": "pageNo and rowsPerPage are required" })
+//         } else {
+//             const list = await Item.find({}).limit(rowsPerPage).skip(skipPages)
+//             console.log("from pagination")
+//             res.send(list)
+//         }
 
 
 
-    } catch (err) {
-        res.status(400).send(err)
-    }
-}
+//     } catch (err) {
+//         res.status(400).send(err)
+//     }
+// }

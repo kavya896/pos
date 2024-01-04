@@ -37,7 +37,7 @@ const schema = new mongoose.Schema({
         ref:"Item"
     }],
     inStock:{
-        type:Number
+        type:String
     },
     lowStock:{
         type:Number
@@ -59,6 +59,8 @@ const schema = new mongoose.Schema({
         type:String
     }
     
+},{
+    timestamps:true
 })
 
 const Item = mongoose.model("Item",schema)
