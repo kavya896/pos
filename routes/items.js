@@ -4,6 +4,6 @@ const router = express.Router()
 
 
 router.route("/category").post(category).get(categoryList)
-router.route("/item").post(Item).get(ItemList)
+router.route("/items").post(Item).get(ItemList)
 router.route("/pagination").get(pagination)
 module.exports = router
