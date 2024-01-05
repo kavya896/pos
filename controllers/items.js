@@ -37,7 +37,8 @@ exports.categoryList = async (req, res) => {
 
 exports.Item = async (req, res) => {
     try {
-        const { name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color } = req.body
+        const { name, catg, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+        const category = catg
         const exists = await Item.find({ name })
         if (exists.length > 0) {
             res.status(400).send({ "message": "Item already exists" })
@@ -48,7 +49,7 @@ exports.Item = async (req, res) => {
                 await updateCategory[0].save()
 
             }
-            const item = await Item.create({ name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color })
+            const item = await Item.create({ name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors })
             await item.save()
             res.status(200).send(item)
         }
@@ -73,7 +74,7 @@ exports.ItemList = async (req, res) => {
                     name: { $regex: search, $options: "i" }
                 }
                 if(category){
-                    query.category = category
+                    query.category=category 
                 }
                 if(stocks){
                     query.inStock = stocks
@@ -85,7 +86,7 @@ exports.ItemList = async (req, res) => {
                     res.json({ "message": "pageNo and rowsPerPage are required" })
                 } else {
                     console.log(query)
-                    const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
+                    const list = await Item.find(query).collation({locale:"en"}).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
                     
                     res.send(list)
                 }
