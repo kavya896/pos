@@ -37,8 +37,8 @@ exports.categoryList = async (req, res) => {
 
 exports.Item = async (req, res) => {
     try {
-        const { name, catg, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
-        const category = catg
+        const { name,  description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+        const category = req.body.catg || req.body.category
         const exists = await Item.find({ name })
         if (exists.length > 0) {
             res.status(400).send({ "message": "Item already exists" })
@@ -73,12 +73,17 @@ exports.ItemList = async (req, res) => {
                 const query = {
                     name: { $regex: search, $options: "i" }
                 }
-                if(category){
-                    query.category=category 
+                if(category == "All Items"){
+                    query.category={$regex:"",$options:"i" }  
+                }else{
+                    query.category={$regex:category,$options:"i" } 
                 }
-                if(stocks){
-                    query.inStock = stocks
+                if(stocks == "All"){
+                    query.inStock ={$regex:"",$options:"i" }  
+                }else{
+                    query.inStock={$regex:stocks,$options:"i" } 
                 }
+                
 
                 const skipPages = (pageNo - 1) * rowsPerPage
                 
@@ -86,7 +91,7 @@ exports.ItemList = async (req, res) => {
                     res.json({ "message": "pageNo and rowsPerPage are required" })
                 } else {
                     console.log(query)
-                    const list = await Item.find(query).collation({locale:"en"}).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
+                    const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
                     
                     res.send(list)
                 }

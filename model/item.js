@@ -37,7 +37,8 @@ const schema = new mongoose.Schema({
         ref:"Item"
     }],
     inStock:{
-        type:String
+        type:String,
+        default:"-"
     },
     lowStock:{
         type:Number
