@@ -90,9 +90,12 @@ exports.ItemList = async (req, res) => {
                 if (!pageNo && !rowsPerPage) {
                     res.json({ "message": "pageNo and rowsPerPage are required" })
                 } else {
-                    console.log(query)
+                   
+                    
+                    
                     const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
                     
+                  
                     res.send(list)
                 }
             }else{
