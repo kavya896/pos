@@ -116,6 +116,39 @@ exports.stocks = async(req,res)=>{
         console.log(err)
     }
 }
+
+exports.updateItems = async(req,res) =>{
+    try{
+        const { name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+        const update = await Item.findByIdAndUpdate( {_id:req.params.id},{ name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors },{new:true})
+        await update.save()
+        res.send(update)
+    }catch(err){
+        console.log(err)
+    }
+}
+
+exports.getitemById = async(req,res) =>{
+    try{
+        const item = await Item.findById({_id:req.params.id})
+        res.send(item)
+    }catch(err){
+        console.log(err)
+    }
+}
+
+exports.getCategoryByName = async(req,res)=>{
+    try{
+        const category = await Category.find({name:req.params.name})
+        if(category.length>0){
+            res.send(category)
+        }
+    }catch(err){
+        console.log(err)
+    }
+}
+
+
 // exports.ItemList = async (req, res) => {
 //     try {
        

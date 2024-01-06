@@ -58,37 +58,37 @@ exports.register = async(req,res)=>{
     }
 }
 
-exports.category = async(req,res)=>{
-    try{
-        const name = req.body.name
-        const exists = await Category.find({name})
+// exports.category = async(req,res)=>{
+//     try{
+//         const name = req.body.name
+//         const exists = await Category.find({name})
         
-        if(exists.length>0){
+//         if(exists.length>0){
            
-            res.status(400).send({message:"name already exists"})
-        }else{
+//             res.status(400).send({message:"name already exists"})
+//         }else{
             
-            const category = await Category.create({name})
-            await category.save()
-            res.status(200).send(category)
-        }
-    }catch(err){
-        console.log(err)
-    }
-}
+//             const category = await Category.create({name})
+//             await category.save()
+//             res.status(200).send(category)
+//         }
+//     }catch(err){
+//         console.log(err)
+//     }
+// }
 
-exports.categoryList = async(req,res) =>{
-    try{
-        const list = await Category.find({})
-        if(list.length>0){
-            res.status(200).send(list)
-        }else{
-            res.status(400).send({message:"list is empty"})
-        }
-    }catch(err){
-        console.log(err)
-    }
-}
+// exports.categoryList = async(req,res) =>{
+//     try{
+//         const list = await Category.find({})
+//         if(list.length>0){
+//             res.status(200).send(list)
+//         }else{
+//             res.status(400).send({message:"list is empty"})
+//         }
+//     }catch(err){
+//         console.log(err)
+//     }
+// }
 
 // exports.dishes = async(req,res) =>{
 //     try{
