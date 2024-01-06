@@ -37,8 +37,9 @@ exports.categoryList = async (req, res) => {
 
 exports.Item = async (req, res) => {
     try {
-        const { name,  description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+        const { name,  description,imageFile, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
         const category = req.body.catg || req.body.category
+        const image = req.body.imageFile
         const exists = await Item.find({ name })
         if (exists.length > 0) {
             res.status(400).send({ "message": "Item already exists" })
@@ -49,7 +50,7 @@ exports.Item = async (req, res) => {
                 await updateCategory[0].save()
 
             }
-            const item = await Item.create({ name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors })
+            const item = await Item.create({ name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors })
             await item.save()
             res.status(200).send(item)
         }
