@@ -3,38 +3,22 @@ const Category = require("../model/category")
 const Item = require("../model/item")
 const Stock = require("../model/stocks")
 
-exports.category = async (req, res) => {
-    try {
-        const { name, color, noOfItems } = req.body
-        const exists = await Category.find({ name })
-
-        if (exists.length > 0) {
-
-            res.status(400).send({ message: "name already exists" })
-        } else {
-
-            const category = await Category.create({ name, color, noOfItems })
-            await category.save()
-            res.status(200).send(category)
-        }
-    } catch (err) {
-        console.log(err)
-    }
-}
-
 exports.categoryList = async (req, res) => {
     try {
         const list = await Category.find({})
         if (list.length > 0) {
-            res.status(200).send(list)
+            res.status(200).send({success:true, list})
         } else {
-            res.status(400).send({ message: "list is empty" })
+            res.status(400).send({success:false, message: "list is empty" })
         }
     } catch (err) {
-        console.log(err)
+        console.log(err);
+        res.status(500).send({
+          success:false,
+          message:"Server Error"
+        })
     }
 }
-
 exports.Item = async (req, res) => {
     try {
         const { name,  description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
@@ -62,7 +46,6 @@ exports.Item = async (req, res) => {
 exports.ItemList = async (req, res) => {
     try {
        
-        
         if (req.query) {
                 const pageNo = req.query.pageNo || 1
                 const rowsPerPage = req.query.rowsPerPage || 10

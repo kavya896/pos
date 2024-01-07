@@ -5,10 +5,10 @@ const schema = new mongoose.Schema({
         required:[true,"Name of the item must be provided"]
     },
     category:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Category",
         required:[true,"Category of the item must be provided"]
     },
-   
     description:{
         type:String,
     },
@@ -56,6 +56,20 @@ const schema = new mongoose.Schema({
     color:{
         type:String,
     },
+    variants: [
+        {
+          name:{type: String},
+          price: {
+            type: Number,
+          },
+          offer: {
+            type: Number,
+            min: 0,
+            max: 100
+          },  
+          offerPrice: {type:Number}
+        }
+      ],
     image:{
         type:String
     }

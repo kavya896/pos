@@ -2,6 +2,7 @@ const Admin = require("../model/admin")
 const Category = require("../model/category")
 const DishItem = require("../model/item")
 const Ingredient = require("../model/ingredient")
+const genPass = require("../config/bcript")
 
 exports.login = async(req,res) =>{
     try{
@@ -10,12 +11,18 @@ exports.login = async(req,res) =>{
         const {email,password} = req.body
         const user = await Admin.find({email})
         if(user){
-            if(user[0].password == password){
-
-                res.status(200).send(user)
+            const checkPassword = await genPass.compairePass(password,user[0].password)
+            // if(user[0].password == password){
+                if(checkPassword){
+                const token = generateToken(user._id, "user");
+                res.status(200).send({success:true,user,  message: "user successfully login",
+                name: user.name,
+                token,
+                userId: user._id,
+                role: "user",})
             }else{
                 
-                res.status(400).send({message:"credencials doesn't match"})
+                res.status(400).send({success:false, message:"credencials doesn't match"})
             }
         }
     }else{
@@ -35,8 +42,8 @@ exports.login = async(req,res) =>{
 exports.register = async(req,res)=>{
     try{
         const {name,role,email,password,pin} = req.body
+        const newPassword = await genPass.password(password)
         const exists = await Admin.find({email})
-     
         if(exists.length>0){
             res.status(400).send({message:"emailId already exists"})
         }else{
@@ -47,7 +54,7 @@ exports.register = async(req,res)=>{
                 
             res.status(400).send({message:"pin already exists"})
             }else{
-                const user = await Admin.create({name,role,email,password,pin})
+                const user = await Admin.create({name,role,email,password:newPassword,pin})
                 await user.save()
                 res.status(200).send(user)
             }

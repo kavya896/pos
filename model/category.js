@@ -12,6 +12,13 @@ const Schema = new mongoose.Schema({
     noOfItems:{
         type:Number,
         default:0
+    },
+    image:{
+        type:String
+    },
+    is_deleted:{
+        type:Boolean,
+        default:false
     }
 })
 
