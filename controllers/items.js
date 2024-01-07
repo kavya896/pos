@@ -131,8 +131,18 @@ exports.updateItems = async(req,res) =>{
 
 exports.getitemById = async(req,res) =>{
     try{
+      
         const item = await Item.findById({_id:req.params.id})
-        res.send(item)
+       
+        if(item){
+            const category = await Category.find({name:item.category})
+            const newlist = {}
+            newlist.item = item
+            newlist.category = category[0]
+        
+            res.send(newlist)
+        }
+       
     }catch(err){
         console.log(err)
     }
