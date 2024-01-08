@@ -2,6 +2,7 @@
 const Category = require("../model/category")
 const Item = require("../model/item")
 const Stock = require("../model/stocks")
+const cloudinary = require("../utils/cloudinary")
 
 exports.category = async (req, res) => {
     try {
@@ -37,9 +38,10 @@ exports.categoryList = async (req, res) => {
 
 exports.Item = async (req, res) => {
     try {
-        const { name,  description,imageFile, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+       
+        const { name,  description,image, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
         const category = req.body.catg || req.body.category
-        const image = req.body.imageFile
+        
         const exists = await Item.find({ name })
         if (exists.length > 0) {
             res.status(400).send({ "message": "Item already exists" })
@@ -56,6 +58,22 @@ exports.Item = async (req, res) => {
         }
 
     } catch (err) {
+        console.log(err)
+    }
+}
+
+exports.uploadImg = async(req,res)=>{
+    try{
+        const file = req.files.image
+      
+       const result =  cloudinary.uploader.upload(file.tempFilePath,{
+        folder:"pos"
+       })
+       console.log((await result).secure_url)
+       res.send((await result).secure_url)
+       
+    
+    }catch(err){
         console.log(err)
     }
 }
