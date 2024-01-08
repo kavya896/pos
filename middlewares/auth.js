@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const admin = require('../model/admin');
-const SECRETCODE = process.env.SECRETCODE
+const SECRETCODE = process.env.JWT_SECRET
 
 
 module.exports = {

@@ -3,22 +3,24 @@ const Category = require("../model/category")
 const DishItem = require("../model/item")
 const Ingredient = require("../model/ingredient")
 const genPass = require("../config/bcript")
+const { generateToken } = require("../middlewares/auth")
 
 exports.login = async(req,res) =>{
     try{
         const email=req.body.email
         if(email){
         const {email,password} = req.body
-        const user = await Admin.find({email})
+        const user = await Admin.findOne({email})
         if(user){
-            const checkPassword = await genPass.compairePass(password,user[0].password)
+            const checkPassword = await genPass.compairePass(password,user.password)
             // if(user[0].password == password){
                 if(checkPassword){
                 const token = generateToken(user._id, "user");
-                res.status(200).send({success:true,user,  message: "user successfully login",
-                name: user.name,
+                user.password = undefined
+                user.pin = undefined
+                res.status(200).send({success:true, message: "user successfully login",
                 token,
-                userId: user._id,
+                user,
                 role: "user",})
             }else{
                 
@@ -26,9 +28,15 @@ exports.login = async(req,res) =>{
             }
         }
     }else{
-        const user = await Admin.find({pin:req.body.pin})
-        if(user.length>0){
-            res.status(200).send(user)
+        const user = await Admin.findOne({pin:req.body.pin})
+        if(user){
+            const token = generateToken(user._id, "user");
+                user.password = undefined
+                user.pin = undefined
+                res.status(200).send({success:true, message: "user successfully login",
+                token,
+                user,
+                role: "user",})
         }else{
             res.status(400).send({message:"credencials doesn't match"})
         }
