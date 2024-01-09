@@ -38,8 +38,7 @@ exports.categoryList = async (req, res) => {
 
 exports.Item = async (req, res) => {
     try {
-       
-        const { name,  description,image, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+        const { name,  description,image, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color } = req.body
         const category = req.body.catg || req.body.category
         
         const exists = await Item.find({ name })
@@ -52,7 +51,7 @@ exports.Item = async (req, res) => {
                 await updateCategory[0].save()
 
             }
-            const item = await Item.create({ name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors })
+            const item = await Item.create({ name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color })
             await item.save()
             res.status(200).send(item)
         }
@@ -138,9 +137,9 @@ exports.stocks = async(req,res)=>{
 
 exports.updateItems = async(req,res) =>{
     try{
-        console.log("update")
-        const { name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
-        const update = await Item.findByIdAndUpdate( {_id:req.params.id},{ name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors },{new:true})
+       
+        const { name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+        const update = await Item.findByIdAndUpdate( {_id:req.params.id},{ name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors },{new:true})
         await update.save()
         res.send(update)
     }catch(err){
