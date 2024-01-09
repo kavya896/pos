@@ -112,7 +112,7 @@ exports.ItemList = async (req, res) => {
                     
                     const count = (await Item.find(query)).length
                     const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
-                    const totalPages = count/rowsPerPage
+                    const totalPages =Math.floor( count/rowsPerPage)+1
                     
                     res.send({list,totalPages})
                 }
