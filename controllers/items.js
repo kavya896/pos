@@ -137,6 +137,17 @@ exports.stocks = async(req,res)=>{
     }
 }
 
+exports.deleteItem = async(req,res)=>{
+    try{
+        console.log(req.params.id)
+        const item = await Item.findByIdAndDelete({_id:req.params.id})
+        
+        res.send({"message":"deleted successfully"})
+    }catch(err){
+        console.log(err)
+    }
+}
+
 exports.updateItems = async(req,res) =>{
     try{
        
