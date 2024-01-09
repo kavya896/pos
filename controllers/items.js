@@ -138,6 +138,7 @@ exports.stocks = async(req,res)=>{
 
 exports.updateItems = async(req,res) =>{
     try{
+        console.log("update")
         const { name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
         const update = await Item.findByIdAndUpdate( {_id:req.params.id},{ name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors },{new:true})
         await update.save()
