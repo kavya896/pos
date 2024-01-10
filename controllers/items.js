@@ -152,13 +152,16 @@ exports.deleteManyItems = async(req,res)=>{
     try{
         const arr = []
         arr.push(req.params.id)
-        console.log(arr[0])
+        // console.log(arr.split(","))
+        for (var i = 0; i < arr.length; i++) {
+            var split = arr[i].split(",");  // just split once
+            for(var j=0;j<split.length;j++){
+                 const item = await Item.findByIdAndDelete({_id:split[j]})
+                
+            }
+        }
        
-            const item = await Item.find({_id:req.params.id})
-            console.log(item)
-        
-        // const item = await Item.deleteMany({id:{$in:arr}})
-        // // console.log(item)
+        res.send({"message":"deleted successfully"})
     }catch(err){
         console.log(err)
     }
