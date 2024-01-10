@@ -148,6 +148,22 @@ exports.deleteItem = async(req,res)=>{
     }
 }
 
+exports.deleteManyItems = async(req,res)=>{
+    try{
+        const arr = []
+        arr.push(req.params.id)
+        console.log(arr[0])
+       
+            const item = await Item.find({_id:req.params.id})
+            console.log(item)
+        
+        // const item = await Item.deleteMany({id:{$in:arr}})
+        // // console.log(item)
+    }catch(err){
+        console.log(err)
+    }
+}
+
 exports.updateItems = async(req,res) =>{
     try{
        
