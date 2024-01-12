@@ -1,3 +1,77 @@
+// const mongoose = require("mongoose")
+// const schema = new mongoose.Schema({
+//     name:{
+//         type:String,
+//         required:[true,"Name of the item must be provided"]
+//     },
+//     category:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"Category",
+//         required:[true,"Category of the item must be provided"]
+//     },
+//     description:{
+//         type:String,
+//     },
+//     available:{
+//         type:Boolean,
+//         default:true
+//     },
+//     soldBy:{
+//         type:String,
+//         enum:["Each","Weight/Volume"],
+//         default:"Each"
+//     }, 
+//     price:{
+//         type:String
+//     },
+//     cost:{
+//         type:String,
+//         default:0.00
+//     },
+//     SKU:{
+//         type:String,
+//         default:10019
+//     },
+//     composite:[{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"Item"
+//     }],
+//     inStock:{
+//         type:String,
+//         default:"-"
+//     },
+//     lowStock:{
+//         type:Number
+//     },
+//     addOnitem:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"AddOnItem"
+//     },
+//     variantOptionName:{
+//         type:String
+//     },
+//     variantOptionValue:{
+//         type:String
+//     },
+//     spiceLevel:{
+//         type:Boolean,
+//         default:false
+//     },
+//     color:{
+//         type:String,
+//     },
+//     image:{
+//         type:String
+//     }
+    
+// },{
+//     timestamps:true
+// })
+
+// const Item = mongoose.model("Item",schema)
+
+// module.exports = Item
+
 const mongoose = require("mongoose")
 const schema = new mongoose.Schema({
     name:{
@@ -5,10 +79,10 @@ const schema = new mongoose.Schema({
         required:[true,"Name of the item must be provided"]
     },
     category:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Category",
+        type:String,
         required:[true,"Category of the item must be provided"]
     },
+   
     description:{
         type:String,
     },
@@ -56,20 +130,6 @@ const schema = new mongoose.Schema({
     color:{
         type:String,
     },
-    variants: [
-        {
-          name:{type: String},
-          price: {
-            type: Number,
-          },
-          offer: {
-            type: Number,
-            min: 0,
-            max: 100
-          },  
-          offerPrice: {type:Number}
-        }
-      ],
     image:{
         type:String
     }

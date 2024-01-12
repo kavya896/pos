@@ -17,8 +17,6 @@ mongoose.connect("mongodb+srv://kavyareddy:kavyareddy@cluster0.msabz.mongodb.net
 })
 
 
-
-
 app.listen(5000,(req,res)=>{
     console.log("port is running at 5000")
 })
