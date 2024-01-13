@@ -3,22 +3,29 @@ const mongoose = require("mongoose")
 const customerSchema = new mongoose.Schema({
     name:{
         type:String,
-        require:true
     },
     phone:{
         type:String,
-        require:true
+        unique: true,
+    },
+    email:{
+        type:String,
+        unique: true,
     },
     DOB:{
         type:Date
     },
-    dateOfAnn:{
+    dateOfvisit:[{
         type:Date
-    },
+    }],
     discount:{
         type:String
     },
-    Address: [{
+    totalVisit:{
+        type:Number,
+        default:0
+    },
+    address: [{
         street: {type:String},
         city: {type:String},
         state: {type:String},

@@ -2,6 +2,7 @@ const express = require("express")
 const {Item, ItemList, stocks, categoryList, uploadImg, updateItems, getitemById, deleteItem } = require("../controllers/items")
 const { category, editCategory, deleteCategory, getCatDetail, categories, categoryDelete } = require("../controllers/category")
 const { addToCart, updateCart, changeQuantity, cancelCartItem } = require("../controllers/cartController")
+const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer } = require("../controllers/customer")
 const router = express.Router()
 
 
@@ -23,5 +24,12 @@ router.post('/add_tocart', addToCart)
 router.patch('/update_cart', updateCart)
 router.patch('/change_quantity', changeQuantity)
 router.patch('/cancel_item', cancelCartItem)
+
+router.post('/create_customer', createCustomer)
+router.post('/get_customer', getCustomer)
+router.get('/get_customerlist', getCustomerList)
+router.patch('/edit_customer', editCustomer)
+router.post('/delete_customer', deleteCustomer)
+
 
 module.exports = router

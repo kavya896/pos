@@ -5,10 +5,8 @@ const Item = require("../model/item");
 // module.exports cart = {
   exports.addToCart = async (req, res) => {
     const { itemId, customerId, preparationNote} = req.body;
-    console.log(itemId,"idddddddddddd");
     try {
       const item = await Item.findOne({ _id: itemId }); 
-    console.log(item,"itemmmmmmm");
 
       const cart = await Cart.find();
       if (cart.length > 0) {
