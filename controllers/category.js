@@ -24,9 +24,15 @@ exports.category = async (req, res) => {
 
 exports.categories = async (req, res) => {
     try {
-        const list = await Category.find({is_deleted:false})
-        if (list.length > 0) {
-            res.status(200).send({success:true, list})
+      const {page = 1, limit = 10} = req.query
+        const length = await Category.find({}).countDocuments() 
+        console.log(length);
+        const skip = (page - 1) * limit
+
+        const catList = await Category.find({}).sort({_id: -1}).skip(skip).limit(parseInt(limit))
+        console.log(catList);
+        if (catList.length > 0) {
+            res.status(200).send({success:true, catList})
         } else {
             res.status(400).send({success:false, message: "list is empty" })
         }

@@ -79,10 +79,15 @@ const schema = new mongoose.Schema({
         required:[true,"Name of the item must be provided"]
     },
     category:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Category",
         required:[true,"Category of the item must be provided"]
     },
-   
+    addOnitem:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Item"
+    }],
+
     description:{
         type:String,
     },
@@ -96,7 +101,7 @@ const schema = new mongoose.Schema({
         default:"Each"
     }, 
     price:{
-        type:String
+        type:Number
     },
     cost:{
         type:String,

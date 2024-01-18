@@ -1,9 +1,9 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const dotenv = require('dotenv')
+const bodyParser = require('body-parser');
 const app= express()
 const cors = require("cors")
-const Admin = require("./model/admin")
 
 app.use(cors())
 // app.use(express.json())

@@ -6,11 +6,9 @@ const customerSchema = new mongoose.Schema({
     },
     phone:{
         type:String,
-        unique: true,
     },
     email:{
         type:String,
-        unique: true,
     },
     DOB:{
         type:Date

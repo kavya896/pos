@@ -1,10 +1,10 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose")
+
 const orderSchema = mongoose.Schema({
   customerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Customer",
   },
-  
   item: [
     {
       product: {
@@ -23,10 +23,7 @@ const orderSchema = mongoose.Schema({
       variant:{
         type: String
       },
-      orderStatus: {
-        type:String,
-        default:"Pending"
-      },
+      
       is_canceled:{
         type: Boolean,
         default: false
@@ -36,6 +33,10 @@ const orderSchema = mongoose.Schema({
   employeeId:{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employee",
+  },
+  orderType:{
+    type:String,
+    required:true
   },
   start_date: {
     type: Date,
@@ -76,7 +77,24 @@ const orderSchema = mongoose.Schema({
     type: Array,
   },
   paymentType: {
-    type: String,
+    cash:{
+      method:{
+        type:String
+      },
+      amount:{
+        type:Number,
+        default:0
+      }
+    },
+    card:{
+      cardNo:{
+        type:String
+      },
+      amount:{
+        type:Number,
+        default:0
+      }
+    }
   },
   paymentStatus: {
     type:String
@@ -86,4 +104,4 @@ const orderSchema = mongoose.Schema({
 });
 
 const Orders = mongoose.model("Orders", orderSchema);
-export default  Orders;
+module.exports = Orders;
