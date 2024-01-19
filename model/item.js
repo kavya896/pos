@@ -8,7 +8,14 @@ const schema = new mongoose.Schema({
         type:String,
         required:[true,"Category of the item must be provided"]
     },
-   
+    categoryId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Category"
+    },
+    addOnitem:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Item"
+    }],
     description:{
         type:String,
     },

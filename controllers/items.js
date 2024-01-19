@@ -237,3 +237,21 @@ exports.getCategoryByName = async(req,res)=>{
 //         res.status(400).send(err)
 //     }
 // }
+exports.categoryItems = async(req,res)=>{
+  try {
+    const { id } = req.query
+    const catItems = await Item.find({categoryId:id})
+    console.log(catItems);
+    res.status(200).send({
+      success:true,
+      catItems,
+      message:"Category Items"
+    })
+  } catch (error) {
+    console.error(error);
+      res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
