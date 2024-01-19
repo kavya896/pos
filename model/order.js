@@ -1,9 +1,16 @@
 const mongoose = require("mongoose")
 
 const orderSchema = mongoose.Schema({
+  billNumber:{
+    type:String
+  },
   customerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Customer",
+  },
+  cartId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Cart",
   },
   item: [
     {
@@ -38,9 +45,8 @@ const orderSchema = mongoose.Schema({
     type:String,
     required:true
   },
-  start_date: {
-    type: Date,
-    default:Date.now()
+  tableNumber:{
+    type: Number,
   },
   delivered_date: {
     type: Date,
@@ -54,15 +60,14 @@ const orderSchema = mongoose.Schema({
   grandTotal: {
   type:Number
 },
-  is_delivered: {
+  orderStatus: {
+    type: String,
+  },
+  customer_cancelled: {
     type: Boolean,
     default: false,
   },
-  user_cancelled: {
-    type: Boolean,
-    default: false,
-  },
-  admin_cancelled: {
+  employee_cancelled: {
     type: Boolean,
     default: false,
   },
@@ -70,8 +75,8 @@ const orderSchema = mongoose.Schema({
     type: String,
   },
   is_returned: {
-    type: Number,
-    default: 0,
+    type: Boolean,
+    default: false
   },
   address: {
     type: Array,
@@ -99,6 +104,10 @@ const orderSchema = mongoose.Schema({
   paymentStatus: {
     type:String
 },
+refunds:{
+  type:Boolean,
+  default:false
+}
 },{
   timestamps: true
 });

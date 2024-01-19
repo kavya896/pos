@@ -1,9 +1,16 @@
 const mongoose = require("mongoose")
 
 const cartSchema = new mongoose.Schema({
+  billNumber:{
+    type:String
+  },
   customer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Customer",
+  },
+  odrderId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Orders",
   },
   items: [
     {
@@ -40,16 +47,14 @@ const cartSchema = new mongoose.Schema({
     }],
     },
   ],
-  
-  // orderType:{
-  //   type:String,
-  //   required:true
-  // },
-  typeOfDining:{
+  is_place_order:{
+    type:Boolean,
+    default:false
+  },
+  orderType:{
     type:String,
-    enum:["Dine in","TakeOut","Delivery"],
-    default:"Dine in"
-},
+    required:true
+  },
   tableNumber:{
     type: Number,
     default: 0,

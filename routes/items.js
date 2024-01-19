@@ -6,6 +6,7 @@ const { order, getOrders } = require("../controllers/orderController");
 const router = express.Router()
 const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer } = require("../controllers/customer");
 const { createTable, createBooking, getDetailsOfBooking } = require("../controllers/bookings");
+const { transactionDetails, grossSales } = require("../controllers/transaction");
 
 
 router.route("/category").post(category).get(categoryList)
@@ -51,4 +52,10 @@ router.post('/delete_customer', deleteCustomer)
 //bookings
 router.route("/table").post(createTable)
 router.route("/booking").post(createBooking).get(getDetailsOfBooking)
+
+//transaction
+router.route("/transaction").get(transactionDetails)
+
+//sales summary
+router.route("/sales").get(grossSales)
 module.exports = router

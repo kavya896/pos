@@ -1,26 +1,22 @@
 const mongoose = require("mongoose")
 const schema = new mongoose.Schema({
     orderNo:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Orders"
     },
-    // name:{
-    //     type:String
-    // },
     amount:{
         type:Number
     },
-    // items:{
-    //     type:Number
-    // },
-    typeOfDining:{
+    totalNoOfItems:{
+        type:Number
+    },
+    orderType:{
         type:String,
-        enum:["Dine in","TakeOut","Delivery"],
-        default:"Dine in"
+        
     },
     payment:{
-        type:String,
-        enum:["cash","card","UPI"],
-        default:"cash"
+        type:Object,
+       
     },
     updatedOn:{
         type:Date
