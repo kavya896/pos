@@ -20,7 +20,9 @@ let newOrder;
         preparationNote:item.preparationNote
       }));
 
-        const oreder = await Orders.create({
+        const order = await Orders.create({
+          cartId:cart._id,
+          billNumber:cart.billNumber,
           customerId: customer._id,
           restaurantId: cart.restaurantId,
           item: items,
@@ -29,22 +31,29 @@ let newOrder;
           grandTotal: cart.grandTotal,
           orderType:cart.orderType,
           tableNumber:cart.tableNumber,
-          // address,
+          tableNumber:cart.tableNumber,
+          orderStatus:cart.orderType,
+          // address:
           paymentType: {
             cash: {
               method:"CASH",
-              amount:payment.cash || 0,},
+              amount:payment || 0,},
             card: {
-              cardNo: payment.card.cardNo || "CARD",
-              amount: payment.card.amount || 0,
+              cardNo: payment || "CARD",
+              amount: payment || 0,
             },
-          },
-          paymentStatus,
+          } || "",
+          // paymentStatus,
         });
-        // await Cart.deleteOne({ _id: cartData._id });
+        console.log(order);
+        await Cart.updateOne({ _id: cartData._id },{
+          $set:{
+            is_place_order:true
+          }
+        });
         res.status(200).send({
           success: true,
-          oreder,
+          order,
           message: "order success",
         });
       
@@ -62,7 +71,7 @@ let newOrder;
       const { orderId, cartId } = req.body
       await Orders.updateOne({_id:orderId},{
         $set:{
-          is_delivered:true
+          orderStatus:"Delivered"
         }
       })
       await Cart.deleteOne({ _id: cartId });
@@ -81,7 +90,35 @@ let newOrder;
 
   exports.editOrder = async(req,res)=>{
     try {
-      
+      const { cartId } =req.body
+      const cart = await Cart.findOne({is_place_order:false})
+      if(cart){
+        if(cart.items.length > 0){
+          res.status(400).send({success:false, message:"Please clear the cart"})
+        }else{
+          const removeCart = await Cart.deleteOne({is_place_order:false})
+          if(removeCart){
+            const orderCart = await Orders.findOne({cartId:cartId})
+            await Cart.updateOne({_Id:cartId}, {
+              $set:{
+                is_place_order:false,
+                odrderId:orderCart._id
+              }
+            })
+            res.status(200).send({success:true, orderCart, message:"edit cart"})
+          }
+        }
+      }else{
+        const orderCart = await Orders.findOne({cartId:cartId})
+        await Cart.updateOne({_id:cartId}, {
+          $set:{
+            is_place_order:false,
+            odrderId:orderCart._id
+          }
+        })
+        console.log(orderCart);
+        res.status(200).send({success:true, orderCart, message:"edit cart"})
+      }
     } catch (error) {
       console.log(error);
       res.status(500).send({

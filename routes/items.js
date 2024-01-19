@@ -6,7 +6,7 @@ const {Item, ItemList, stocks, categoryList, uploadImg, updateItems, getitemById
 const { category, editCategory, deleteCategory, getCatDetail, categories, categoryDelete } = require("../controllers/category")
 const { addToCart, updateCart, changeQuantity, cancelCartItem, selectOrderType, getcart } = require("../controllers/cartController")
 const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer } = require("../controllers/customer");
-const { order, getOrders } = require("../controllers/orderController");
+const { order, getOrders, editOrder } = require("../controllers/orderController");
 
 const router = express.Router()
 const storage = multer.memoryStorage();
@@ -46,6 +46,7 @@ router.post('/delete_customer', deleteCustomer)
 
 router.post('/place_order', order)
 router.get('/get_order', getOrders)
+router.post('/edit_order', editOrder)
 
 
 module.exports = router

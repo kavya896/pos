@@ -2,7 +2,7 @@ const Customer = require("../model/cumstomer");
 
 exports.createCustomer = async (req, res) => {
   try {
-    const { name, phone, email, DOB, address } = req.body;
+    const { name, phone, email, DOB, dateOfAniversary, address, state } = req.body;
     const newVisitDate = new Date();
     const existCost = await Customer.findOne({ phone: phone });
     if (existCost) {
@@ -27,6 +27,8 @@ exports.createCustomer = async (req, res) => {
         address,
         dateOfvisit: newVisitDate,
         totalVisit: 1,
+        dateOfAniversary,
+        state
       });
       res.status(200).send({
         success: true,

@@ -13,6 +13,9 @@ const customerSchema = new mongoose.Schema({
     DOB:{
         type:Date
     },
+    dateOfAniversary:{
+        type:Date
+    },
     dateOfvisit:[{
         type:Date
     }],
@@ -23,12 +26,15 @@ const customerSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
-    address: [{
+    state:{
+        type:String
+    },
+    address: {
         street: {type:String},
         city: {type:String},
         state: {type:String},
         postalCode: {type:String},
-        }],
+        },
 })
 
 const Customer = mongoose.model("Customer",customerSchema)
