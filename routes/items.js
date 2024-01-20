@@ -6,7 +6,7 @@ const { order, getOrders } = require("../controllers/orderController");
 const router = express.Router()
 const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer } = require("../controllers/customer");
 const { createTable, createBooking, getDetailsOfBooking } = require("../controllers/bookings");
-const { transactionDetails, grossSales } = require("../controllers/transaction");
+const { transactionDetails, grossSales, grossprofit, netSales, discount, refunds, salesByItems } = require("../controllers/transaction");
 
 
 router.route("/category").post(category).get(categoryList)
@@ -57,5 +57,12 @@ router.route("/booking").post(createBooking).get(getDetailsOfBooking)
 router.route("/transaction").get(transactionDetails)
 
 //sales summary
-router.route("/sales").get(grossSales)
+router.route("/grossSales").get(grossSales)
+router.route("/refunds").get(refunds)
+router.route("/discount").get(discount)
+router.route("/netSales").get(netSales)
+router.route("/grossprofit").get(grossprofit)
+
+//sales By Items
+router.route("/salesByItems").get(salesByItems)
 module.exports = router

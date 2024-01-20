@@ -2,7 +2,9 @@
 //Once payment is done
 
 const Customer = require("../model/customer")
+const Item = require("../model/item")
 const Transaction = require("../model/transactions")
+
 
 exports.transactionDetails = async (req, res) => {
     try {
@@ -32,7 +34,78 @@ exports.transactionDetails = async (req, res) => {
 exports.grossSales = async (req, res) => {
     try {
         const { startDay, endDay, startPeriod, endPeriod, allday } = req.body
-        const transaction = await Transaction.find()
+        const data = await specficData(startDay,endDay,startPeriod,endPeriod)
+        var mappingValues = []
+        data.forEach((item,index)=>{
+           mappingValues.push(item.orderNo.grandTotal)
+        })
+        console.log(mappingValues)
+        res.send(data)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+exports.refunds = async(req,res) =>{
+    try{
+        const { startDay, endDay, startPeriod, endPeriod, allday } = req.body
+        const data = await specficData(startDay,endDay,startPeriod,endPeriod)
+        var mappingValues = []
+        data.forEach((item,index)=>{
+           mappingValues.push(item.orderNo.refund)
+        })
+        console.log(mappingValues)
+        res.send(data) 
+    }catch(err){
+        console.log(err)
+    }
+}
+
+exports.discount = async(req,res) =>{
+    try{
+        const { startDay, endDay, startPeriod, endPeriod, allday } = req.body
+        const data = await specficData(startDay,endDay,startPeriod,endPeriod)
+        var mappingValues = []
+        data.forEach((item,index)=>{
+           mappingValues.push(item.orderNo.discount)
+        })
+        console.log(mappingValues)
+        res.send(data) 
+    }catch(err){
+        console.log(err)
+    }
+}
+
+exports.netSales = async(req,res) =>{
+    try{
+        const { startDay, endDay, startPeriod, endPeriod, allday } = req.body
+        const data = await specficData(startDay,endDay,startPeriod,endPeriod)
+        var mappingValues = []
+        data.forEach((item,index)=>{
+           mappingValues.push(item.orderNo.grandTotal-item.orderNo.discount)
+        })
+        console.log(mappingValues)
+        res.send(data) 
+    }catch(err){
+        console.log(err)
+    }
+}
+exports.grossprofit = async(req,res) =>{
+    try{
+        const { startDay, endDay, startPeriod, endPeriod, allday } = req.body
+        const data = await specficData(startDay,endDay,startPeriod,endPeriod)
+        var mappingValues = []
+        data.forEach((item,index)=>{
+           mappingValues.push(item.orderNo.grandTotal/100)
+        })
+        console.log(mappingValues)
+        res.send(data) 
+    }catch(err){
+        console.log(err)
+    }
+}
+const specficData = async (startDay,endDay,startPeriod,endPeriod)=>{
+    const transaction = await Transaction.find().populate("orderNo")
         // const starts = new Date(Date.now(startDay)).toISOString().split('T')[0]
         // const ends = new Date(Date.now(endDay)).toISOString().split('T')[0]
         
@@ -54,15 +127,39 @@ exports.grossSales = async (req, res) => {
                 transaction.forEach((item,index)=>{
                     // && item.updatedOn.getHours()<new Date(endPeriod).getHours()
                     if(item.updatedOn.getDate()==new Date(next).getDate()  && startPeriod.split(":")[0]<= item.updatedOn.getHours() && item.updatedOn.getHours()<=endPeriod.split(":")[0]){
-                        console.log(transaction[index].updatedOn.getHours(),startPeriod.split(":")[0],endPeriod.split(":")[0])
+                        // console.log(transaction[index].updatedOn.getHours(),startPeriod.split(":")[0],endPeriod.split(":")[0])
                        arrayOfData.push(transaction[index])
                     }
                 })
             }
             
         }
-        res.send(arrayOfData)
-    } catch (err) {
+        return arrayOfData
+}
+
+// sales By Item
+
+exports.salesByItems = async(req,res)=>{
+    try{
+        const { startDay, endDay, startPeriod, endPeriod, allday } = req.body
+        const data = await specficData(startDay,endDay,startPeriod,endPeriod)
+        
+        var arrayOfItemList = []
+        data.forEach((items,index)=>{
+            items.orderNo.item.forEach(async(ite,ind)=>{
+                arrayOfItemList.push(ite.product)
+            })
+            
+        })
+        let count = {}
+        arrayOfItemList.forEach(val=>count[val]=(count[val]||0)+1)
+        uniqueArray = arrayOfItemList.filter(function(item, pos) {
+            return arrayOfItemList.indexOf(item) == pos;
+        })
+        console.log(arrayOfItemList,Object.keys(count).length)
+        console.log(uniqueArray.length)
+        
+    }catch(err){
         console.log(err)
     }
 }

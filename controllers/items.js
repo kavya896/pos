@@ -1,5 +1,6 @@
 
 const Category = require("../model/category")
+const DiningOption = require("../model/diningOption")
 const Item = require("../model/item")
 const Stock = require("../model/stocks")
 const cloudinary = require("../utils/cloudinary")
@@ -254,4 +255,21 @@ exports.categoryItems = async(req,res)=>{
       message: "Internal server error",
     });
   }
+}
+
+//Dining options
+exports.createDiningOptions = async(req,res)=>{
+    try{
+        const {name} = req.body
+        const options = await DiningOption.find({name})
+        if(options.length>0){
+            res.send({"message":"Dining option name already exists"})
+        }else{
+            const data = await options.create({name})
+            await data.save()
+            res.send(data)
+        }
+    }catch(err){
+        console.log(err)
+    }
 }

@@ -29,6 +29,20 @@ const customerSchema = new mongoose.Schema({
         state: {type:String},
         postalCode: {type:String},
         }],
+    suburb:{
+        type:String
+    },
+   
+    country:{
+        type:String
+    },
+    customerCode:{
+        type:String
+    },
+    note:{
+        type:String
+    }
+
 })
 
 const Customer = mongoose.model("Customer",customerSchema)

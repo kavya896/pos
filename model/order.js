@@ -54,11 +54,23 @@ const orderSchema = mongoose.Schema({
   totalPrice: {
     type: String,
   },
+  totalCost:{
+    type:String,
+    default:0.00
+  },
   discount: {
     type:Number,
 },
+tax:{
+  type:Number,
+  default:0
+},
   grandTotal: {
   type:Number
+},
+refund:{
+  type:Number,
+  default: 0
 },
   orderStatus: {
     type: String,
@@ -104,10 +116,6 @@ const orderSchema = mongoose.Schema({
   paymentStatus: {
     type:String
 },
-refunds:{
-  type:Boolean,
-  default:false
-}
 },{
   timestamps: true
 });
