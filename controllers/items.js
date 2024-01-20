@@ -1,5 +1,6 @@
 
 const Category = require("../model/category")
+const DiningOption = require("../model/diningOption")
 const Item = require("../model/item")
 const Stock = require("../model/stocks")
 const cloudinary = require("../utils/cloudinary")
@@ -38,8 +39,7 @@ exports.categoryList = async (req, res) => {
 
 exports.Item = async (req, res) => {
     try {
-       
-        const { name,  description,image, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+        const { name,  description,image, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color } = req.body
         const category = req.body.catg || req.body.category
         
         const exists = await Item.find({ name })
@@ -52,7 +52,7 @@ exports.Item = async (req, res) => {
                 await updateCategory[0].save()
 
             }
-            const item = await Item.create({ name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors })
+            const item = await Item.create({ name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color })
             await item.save()
             res.status(200).send(item)
         }
@@ -111,15 +111,17 @@ exports.ItemList = async (req, res) => {
                 } else {
                    
                     
-                    
+                    const count = (await Item.find(query)).length
                     const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
+                    const totalPages =Math.floor( count/rowsPerPage)+1
                     
-                  
-                    res.send(list)
+                    res.send({list,totalPages})
                 }
             }else{
-                const items = await Item.find({}).limit(10)
-                res.send(items)
+                const count = (await Item.find({})).length
+                const list = await Item.find({}).limit(10)
+                const totalPages = count/10
+                res.send({list,totalPages})
             }
         
     } catch (err) {
@@ -136,10 +138,41 @@ exports.stocks = async(req,res)=>{
     }
 }
 
+exports.deleteItem = async(req,res)=>{
+    try{
+        console.log(req.params.id)
+        const item = await Item.findByIdAndDelete({_id:req.params.id})
+        
+        res.send({"message":"deleted successfully"})
+    }catch(err){
+        console.log(err)
+    }
+}
+
+exports.deleteManyItems = async(req,res)=>{
+    try{
+        const arr = []
+        arr.push(req.params.id)
+        // console.log(arr.split(","))
+        for (var i = 0; i < arr.length; i++) {
+            var split = arr[i].split(",");  // just split once
+            for(var j=0;j<split.length;j++){
+                 const item = await Item.findByIdAndDelete({_id:split[j]})
+                
+            }
+        }
+       
+        res.send({"message":"deleted successfully"})
+    }catch(err){
+        console.log(err)
+    }
+}
+
 exports.updateItems = async(req,res) =>{
     try{
-        const { name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
-        const update = await Item.findByIdAndUpdate( {_id:req.params.id},{ name, category, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors },{new:true})
+       
+        const { name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+        const update = await Item.findByIdAndUpdate( {_id:req.params.id},{ name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors },{new:true})
         await update.save()
         res.send(update)
     }catch(err){
@@ -205,3 +238,38 @@ exports.getCategoryByName = async(req,res)=>{
 //         res.status(400).send(err)
 //     }
 // }
+exports.categoryItems = async(req,res)=>{
+  try {
+    const { id } = req.query
+    const catItems = await Item.find({categoryId:id})
+    console.log(catItems);
+    res.status(200).send({
+      success:true,
+      catItems,
+      message:"Category Items"
+    })
+  } catch (error) {
+    console.error(error);
+      res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+//Dining options
+exports.createDiningOptions = async(req,res)=>{
+    try{
+        const {name} = req.body
+        const options = await DiningOption.find({name})
+        if(options.length>0){
+            res.send({"message":"Dining option name already exists"})
+        }else{
+            const data = await options.create({name})
+            await data.save()
+            res.send(data)
+        }
+    }catch(err){
+        console.log(err)
+    }
+}

@@ -11,8 +11,8 @@ app.use(express.json({limit: '50mb'}));
 app.use(fileUpload({
     useTempFiles:true
 }))
-
-
+app.use("/qrcode",require("./routes/qrcode"))
+app.use("/employee",require("./routes/employee"))
 
 app.use("/api",require("./routes/user"))
 app.use("/api/v1",require("./routes/items"))

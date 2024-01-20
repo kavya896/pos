@@ -4,11 +4,27 @@ const schema = new mongoose.Schema({
         type:String,
         required:[true,"Name of the item must be provided"]
     },
-    category:{
+    // category:{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     ref:"Category",
+    //     required:[true,"Category of the item must be provided"]
+    // },
+    categoryName:{
         type:String,
         required:[true,"Category of the item must be provided"]
     },
-   
+    category:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Category"
+    },
+    typeOfFood:{
+        type:String,
+        required:true
+    },
+    addOnitem:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Item"
+    }],
     description:{
         type:String,
     },
@@ -42,6 +58,10 @@ const schema = new mongoose.Schema({
     },
     lowStock:{
         type:Number
+    },
+    modifiers:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Modifier"
     },
     variantOptionName:{
         type:String

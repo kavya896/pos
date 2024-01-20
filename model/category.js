@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const Schema = new mongoose.Schema({
     name:{
         type:String,
-        required:true
+        required:true 
     },
     color:{
         type:String,
@@ -12,6 +12,13 @@ const Schema = new mongoose.Schema({
     noOfItems:{
         type:Number,
         default:0
+    },
+    image:{
+        type:String
+    },
+    is_deleted:{
+        type:Boolean,
+        default:false
     }
 })
 
