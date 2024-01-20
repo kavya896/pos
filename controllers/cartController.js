@@ -9,9 +9,9 @@ exports.selectOrderType = async (req, res) => {
     const cart = await Cart.find({is_place_order:false}); 
     if (cart.length > 0) {
       res
-        .status(200)
+        .status(400)
         .send({
-          success: true,
+          success: false,
           message:
             "After changing order type the cart items get removed, please add items again.",
         });
@@ -317,6 +317,30 @@ exports.cartTotal = async (req, res) => {
   }
 }
 
+exports.cancelCart = async(req,res)=>{
+  try {
+    const { cartId } = req.body
+    if(cartId){
+
+      await Cart.deleteOne({_id:cartId})
+      res.status(200).send({
+        success: true,
+        message: "Cart Canceled",
+      });
+    }else{
+      res.status(400).send({
+        success: false,
+        message: "Cart is empty",
+      });
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({
+      success: false,
+      message: "seerver error",
+    });
+  }
+}
   exports.getcart = async (req, res) => {
     try {
       const cartId = req.query.id;

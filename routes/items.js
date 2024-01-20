@@ -4,9 +4,9 @@ const csv = require('csv-parser');
 
 const {Item, ItemList, stocks, categoryList, uploadImg, updateItems, getitemById, deleteItem, uploardCsv, addOnItemList, categoryItems } = require("../controllers/items")
 const { category, editCategory, deleteCategory, getCatDetail, categories, categoryDelete } = require("../controllers/category")
-const { addToCart, updateCart, changeQuantity, cancelCartItem, selectOrderType, getcart } = require("../controllers/cartController")
+const { addToCart, updateCart, changeQuantity, cancelCartItem, selectOrderType, getcart, cancelCart } = require("../controllers/cartController")
 const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer } = require("../controllers/customer");
-const { order, getOrders, editOrder } = require("../controllers/orderController");
+const { order, getOrders, editOrder, getEditOrder, getRunningOrders } = require("../controllers/orderController");
 
 const router = express.Router()
 const storage = multer.memoryStorage();
@@ -37,6 +37,7 @@ router.post('/add_tocart', addToCart)
 router.post('/update_cart', updateCart)
 router.patch('/change_quantity', changeQuantity)
 router.patch('/cancel_item', cancelCartItem)
+router.post('/cancel_cart', cancelCart)
 
 router.post('/create_customer', createCustomer)
 router.post('/get_customer', getCustomer)
@@ -46,7 +47,8 @@ router.post('/delete_customer', deleteCustomer)
 
 router.post('/place_order', order)
 router.get('/get_order', getOrders)
-router.post('/edit_order', editOrder)
+router.get('/get_running_order', getRunningOrders)
+router.post('/edit_order', getEditOrder)
 
 
 module.exports = router
