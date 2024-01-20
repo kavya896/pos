@@ -151,14 +151,36 @@ exports.salesByItems = async(req,res)=>{
             })
             
         })
+        var finalData=[]
+        for(var i =0;i<arrayOfItemList.length;i++){
+            const list = await Item.findById(arrayOfItemList[i])
+            finalData.push(list.name)
+        }
         let count = {}
-        arrayOfItemList.forEach(val=>count[val]=(count[val]||0)+1)
-        uniqueArray = arrayOfItemList.filter(function(item, pos) {
-            return arrayOfItemList.indexOf(item) == pos;
-        })
-        console.log(arrayOfItemList,Object.keys(count).length)
-        console.log(uniqueArray.length)
+        finalData.forEach(val=>count[val]=(count[val]||0)+1)
         
+        let sortable = [];
+        for (var id in count) {
+            sortable.push([id, count[id]]);
+        }
+        
+        sortable.sort(function(a, b) {
+            return b[1] - a[1];
+        });
+        
+        // let count = {}
+        // arrayOfItemList.forEach(val=>count[val]=(count[val]||0)+1)
+        // console.log(arrayOfItemList,count)
+        // let sortable = [];
+        // for (var id in count) {
+        //     sortable.push([id, count[id]]);
+        // }
+        
+        // sortable.sort(function(a, b) {
+        //     return a[1] - b[1];
+        // });
+        // console.log(arrayOfItemList,count,sortable)
+        res.send(sortable)
     }catch(err){
         console.log(err)
     }

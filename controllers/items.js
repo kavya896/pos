@@ -265,7 +265,7 @@ exports.createDiningOptions = async(req,res)=>{
         if(options.length>0){
             res.send({"message":"Dining option name already exists"})
         }else{
-            const data = await options.create({name})
+            const data = await DiningOption.create({name})
             await data.save()
             res.send(data)
         }
@@ -273,3 +273,17 @@ exports.createDiningOptions = async(req,res)=>{
         console.log(err)
     }
 }
+exports.getDiningOptions = async(req,res)=>{
+    try{
+        const options = await DiningOption.find({})
+        if(options.length<0){
+            res.send({"message":"Dining option is empty"})
+        }else{
+            res.send(options)
+        }
+    }catch(err){
+        console.log(err)
+    }
+}
+
+//tax

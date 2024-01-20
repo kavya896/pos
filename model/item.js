@@ -78,6 +78,10 @@ const schema = new mongoose.Schema({
     },
     image:{
         type:String
+    },
+    tax:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Tax"
     }
     
 },{

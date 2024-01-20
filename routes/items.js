@@ -1,5 +1,5 @@
 const express = require("express")
-const { category, categoryList, Item, ItemList, stocks, updateItems, getitemById, getCategoryByName, uploadImg, deleteItem, deleteManyItems,categoryItems } = require("../controllers/items")
+const { category, categoryList, Item, ItemList, stocks, updateItems, getitemById, getCategoryByName, uploadImg, deleteItem, deleteManyItems,categoryItems, createDiningOptions, getDiningOptions } = require("../controllers/items")
 const {  editCategory, deleteCategory, getCatDetail, categories, categoryDelete } = require("../controllers/category")
 const { addToCart, updateCart, changeQuantity, cancelCartItem, selectOrderType, getcart } = require("../controllers/cartController")
 const { order, getOrders } = require("../controllers/orderController");
@@ -55,6 +55,9 @@ router.route("/booking").post(createBooking).get(getDetailsOfBooking)
 
 //transaction
 router.route("/transaction").get(transactionDetails)
+
+//diningOptions
+router.route("/diningOptions").post(createDiningOptions).get(getDiningOptions)
 
 //sales summary
 router.route("/grossSales").get(grossSales)
