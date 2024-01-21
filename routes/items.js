@@ -1,12 +1,12 @@
 const express = require("express")
-const { category, categoryList, Item, ItemList, stocks, updateItems, getitemById, getCategoryByName, uploadImg, deleteItem, deleteManyItems,categoryItems, createDiningOptions, getDiningOptions } = require("../controllers/items")
+const { category, categoryList, Item, ItemList, stocks, updateItems, getitemById, getCategoryByName, uploadImg, deleteItem, deleteManyItems,categoryItems, createDiningOptions, getDiningOptions, createModifiers, getModifierOptions, deleteModifiers } = require("../controllers/items")
 const {  editCategory, deleteCategory, getCatDetail, categories, categoryDelete } = require("../controllers/category")
 const { addToCart, updateCart, changeQuantity, cancelCartItem, selectOrderType, getcart } = require("../controllers/cartController")
 const { order, getOrders } = require("../controllers/orderController");
 const router = express.Router()
 const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer, customerList, deleteCustomers } = require("../controllers/customer");
 const { createTable, createBooking, getDetailsOfBooking } = require("../controllers/bookings");
-const { transactionDetails, grossSales, grossprofit, netSales, discount, refunds, salesByItems } = require("../controllers/transaction");
+const { transactionDetails, grossSales, grossprofit, netSales, discount, refunds, salesByItems, salesByCategory } = require("../controllers/transaction");
 
 
 router.route("/category").post(category).get(categoryList)
@@ -69,4 +69,11 @@ router.route("/grossprofit").get(grossprofit)
 
 //sales By Items
 router.route("/salesByItems").get(salesByItems)
+
+//sales By category
+router.route("/salesByCategory").get(salesByCategory)
+
+//modifiers
+router.route("/modifier").post(createModifiers).get(getModifierOptions)
+router.route("/deleteModifiers/:id").get(deleteModifiers)
 module.exports = router

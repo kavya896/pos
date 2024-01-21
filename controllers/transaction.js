@@ -1,6 +1,7 @@
 
 //Once payment is done
 
+const Category = require("../model/category")
 const Customer = require("../model/customer")
 const Item = require("../model/item")
 const Transaction = require("../model/transactions")
@@ -181,6 +182,46 @@ exports.salesByItems = async(req,res)=>{
         // });
         // console.log(arrayOfItemList,count,sortable)
         res.send(sortable)
+    }catch(err){
+        console.log(err)
+    }
+}
+
+
+exports.salesByCategory = async(req,res) =>{
+    try{
+        const { startDay, endDay, startPeriod, endPeriod, allday } = req.body
+        const data = await specficData(startDay,endDay,startPeriod,endPeriod)
+
+        var arrayOfItemList = []
+        data.forEach((items,index)=>{
+            items.orderNo.item.forEach(async(ite,ind)=>{
+                arrayOfItemList.push(ite.product)
+            })
+            
+        })
+        var finalData=[]
+        for(var i =0;i<arrayOfItemList.length;i++){
+            const list = await Item.findById(arrayOfItemList[i])
+            finalData.push(list.name)
+        }
+        let count = {}
+        finalData.forEach(val=>count[val]=(count[val]||0)+1)
+        
+        let sortable = [];
+        for (var id in count) {
+            sortable.push([id, count[id]]);
+        }
+        
+        sortable.sort(function(a, b) {
+            return b[1] - a[1];
+        });
+        for(var x=0;x<sortable.length;x++){
+            const category = await Item.find({name:sortable[x][0]})
+            sortable[x].push(category[0].category)
+        }
+        res.send(sortable)
+
     }catch(err){
         console.log(err)
     }

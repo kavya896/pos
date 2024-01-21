@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const Schema = new mongoose.Schema({
-    modifierName:{
+    name:{
         type:String,
         required:true
     },

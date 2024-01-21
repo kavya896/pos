@@ -2,6 +2,7 @@
 const Category = require("../model/category")
 const DiningOption = require("../model/diningOption")
 const Item = require("../model/item")
+const Modifier = require("../model/modifiers")
 const Stock = require("../model/stocks")
 const cloudinary = require("../utils/cloudinary")
 
@@ -308,3 +309,55 @@ exports.getDiningOptions = async (req, res) => {
 }
 
 //tax
+
+
+//modifiers
+exports.createModifiers = async (req, res) => {
+    try {
+        const { name,optionName,value } = req.body
+        const options = await Modifier.find({ name })
+        if (options.length > 0) {
+            res.send({ "message": "Modifiers option name already exists" })
+        } else {
+            const data = await Modifier.create({ name })
+            await data.save()
+            res.send(data)
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+exports.getModifierOptions = async (req, res) => {
+    try {
+        const options = await Modifier.find({})
+        if (options.length < 0) {
+            res.send({ "message": "no Modifiers" })
+        } else {
+            res.send(options)
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
+exports.deleteModifiers = async (req, res) => {
+    try {
+        const arr = []
+        arr.push(req.params.id)
+        console.log(arr)
+        // console.log(arr.split(","))
+        for (var i = 0; i < arr.length; i++) {
+            var split = arr[i].split(",");  // just split once
+            for (var j = 0; j < split.length; j++) {
+                const item = await Modifier.findByIdAndDelete({ _id: split[j] })
+
+            }
+        }
+
+        res.send({ "message": "deleted successfully" })
+    } catch (err) {
+        console.log(err)
+    }
+}
