@@ -4,7 +4,7 @@ const {  editCategory, deleteCategory, getCatDetail, categories, categoryDelete 
 const { addToCart, updateCart, changeQuantity, cancelCartItem, selectOrderType, getcart } = require("../controllers/cartController")
 const { order, getOrders } = require("../controllers/orderController");
 const router = express.Router()
-const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer } = require("../controllers/customer");
+const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer, customerList, deleteCustomers } = require("../controllers/customer");
 const { createTable, createBooking, getDetailsOfBooking } = require("../controllers/bookings");
 const { transactionDetails, grossSales, grossprofit, netSales, discount, refunds, salesByItems } = require("../controllers/transaction");
 
@@ -48,7 +48,8 @@ router.post('/get_customer', getCustomer)
 router.get('/get_customerlist', getCustomerList)
 router.patch('/edit_customer', editCustomer)
 router.post('/delete_customer', deleteCustomer)
-
+router.get("/customers",customerList)
+router.get("/deleteCustomers/:id",deleteCustomers)
 //bookings
 router.route("/table").post(createTable)
 router.route("/booking").post(createBooking).get(getDetailsOfBooking)

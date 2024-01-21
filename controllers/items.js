@@ -39,9 +39,9 @@ exports.categoryList = async (req, res) => {
 
 exports.Item = async (req, res) => {
     try {
-        const { name,  description,image, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color } = req.body
+        const { name, description, image, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color } = req.body
         const category = req.body.catg || req.body.category
-        
+
         const exists = await Item.find({ name })
         if (exists.length > 0) {
             res.status(400).send({ "message": "Item already exists" })
@@ -52,7 +52,7 @@ exports.Item = async (req, res) => {
                 await updateCategory[0].save()
 
             }
-            const item = await Item.create({ name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color })
+            const item = await Item.create({ name, category, image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, color })
             await item.save()
             res.status(200).send(item)
         }
@@ -62,150 +62,171 @@ exports.Item = async (req, res) => {
     }
 }
 
-exports.uploadImg = async(req,res)=>{
-    try{
+exports.uploadImg = async (req, res) => {
+    try {
         const file = req.files.image
-      
-       const result =  cloudinary.uploader.upload(file.tempFilePath,{
-        folder:"pos"
-       })
-       console.log((await result).secure_url)
-       res.send((await result).secure_url)
-       
-    
-    }catch(err){
+
+        const result = cloudinary.uploader.upload(file.tempFilePath, {
+            folder: "pos"
+        })
+        console.log((await result).secure_url)
+        res.send((await result).secure_url)
+
+
+    } catch (err) {
         console.log(err)
     }
 }
 
 exports.ItemList = async (req, res) => {
     try {
-       
-        
-        if (req.query) {
-                const pageNo = req.query.pageNo || 1
-                const rowsPerPage = req.query.rowsPerPage || 10
-                const category = req.query.category || ""
-                const stocks = req.query.stocks || ""
-                const search = req.query.search || ""
-                
-                const query = {
-                    name: { $regex: search, $options: "i" }
-                }
-                if(category == "All Items"){
-                    query.category={$regex:"",$options:"i" }  
-                }else{
-                    query.category={$regex:category,$options:"i" } 
-                }
-                if(stocks == "All"){
-                    query.inStock ={$regex:"",$options:"i" }  
-                }else{
-                    query.inStock={$regex:stocks,$options:"i" } 
-                }
-                
+        const pageNo = req.query.pageNo || 1
+        const rowsPerPage = req.query.rowsPerPage || 10
+        const skipPages = (pageNo - 1) * rowsPerPage
+        if(!pageNo && !rowsPerPage){
+            res.send({ "message": "pageNo and rowsPerPage are required" })
+        }else{
+            const count = (await Item.find()).length
+            const list = await Item.find().sort({ updatedAt: -1 }).limit(rowsPerPage).skip(skipPages)
+            const totalPages = Math.floor(count / rowsPerPage) + 1
 
-                const skipPages = (pageNo - 1) * rowsPerPage
-                
-                if (!pageNo && !rowsPerPage) {
-                    res.json({ "message": "pageNo and rowsPerPage are required" })
-                } else {
-                   
-                    
-                    const count = (await Item.find(query)).length
-                    const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
-                    const totalPages =Math.floor( count/rowsPerPage)+1
-                    
-                    res.send({list,totalPages})
-                }
-            }else{
-                const count = (await Item.find({})).length
-                const list = await Item.find({}).limit(10)
-                const totalPages = count/10
-                res.send({list,totalPages})
-            }
+        res.send({ list, totalPages })
+        }
         
     } catch (err) {
-        res.status(400).send(err)
-    }
-}
-
-exports.stocks = async(req,res)=>{
-    try{
-       const stock = await Stock.find({})
-       res.send(stock)
-    }catch(err){
         console.log(err)
     }
 }
 
-exports.deleteItem = async(req,res)=>{
-    try{
+// exports.ItemList = async (req, res) => {
+//     try {
+
+
+//         if (req.query) {
+//                 const pageNo = req.query.pageNo || 1
+//                 const rowsPerPage = req.query.rowsPerPage || 10
+//                 const category = req.query.category || ""
+//                 const stocks = req.query.stocks || ""
+//                 const search = req.query.search || ""
+
+//                 const query = {
+//                     name: { $regex: search, $options: "i" }
+//                 }
+//                 if(category == "All Items"){
+//                     query.category={$regex:"",$options:"i" }  
+//                 }else{
+//                     query.category={$regex:category,$options:"i" } 
+//                 }
+//                 if(stocks == "All"){
+//                     query.inStock ={$regex:"",$options:"i" }  
+//                 }else{
+//                     query.inStock={$regex:stocks,$options:"i" } 
+//                 }
+
+
+//                 const skipPages = (pageNo - 1) * rowsPerPage
+
+//                 if (!pageNo && !rowsPerPage) {
+//                     res.json({ "message": "pageNo and rowsPerPage are required" })
+//                 } else {
+
+
+//                     const count = (await Item.find(query)).length
+//                     const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
+//                     const totalPages =Math.floor( count/rowsPerPage)+1
+
+//                     res.send({list,totalPages})
+//                 }
+//             }else{
+//                 const count = (await Item.find({})).length
+//                 const list = await Item.find({}).limit(10)
+//                 const totalPages = count/10
+//                 res.send({list,totalPages})
+//             }
+
+//     } catch (err) {
+//         res.status(400).send(err)
+//     }
+// }
+
+exports.stocks = async (req, res) => {
+    try {
+        const stock = await Stock.find({})
+        res.send(stock)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+exports.deleteItem = async (req, res) => {
+    try {
         console.log(req.params.id)
-        const item = await Item.findByIdAndDelete({_id:req.params.id})
-        
-        res.send({"message":"deleted successfully"})
-    }catch(err){
+        const item = await Item.findByIdAndDelete({ _id: req.params.id })
+
+        res.send({ "message": "deleted successfully" })
+    } catch (err) {
         console.log(err)
     }
 }
 
-exports.deleteManyItems = async(req,res)=>{
-    try{
+exports.deleteManyItems = async (req, res) => {
+    try {
         const arr = []
         arr.push(req.params.id)
+
         // console.log(arr.split(","))
         for (var i = 0; i < arr.length; i++) {
             var split = arr[i].split(",");  // just split once
-            for(var j=0;j<split.length;j++){
-                 const item = await Item.findByIdAndDelete({_id:split[j]})
-                
+            for (var j = 0; j < split.length; j++) {
+                const item = await Item.findByIdAndDelete({ _id: split[j] })
+
             }
         }
-       
-        res.send({"message":"deleted successfully"})
-    }catch(err){
+
+        res.send({ "message": "deleted successfully" })
+    } catch (err) {
         console.log(err)
     }
 }
 
-exports.updateItems = async(req,res) =>{
-    try{
-       
-        const { name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
-        const update = await Item.findByIdAndUpdate( {_id:req.params.id},{ name, category,image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors },{new:true})
+exports.updateItems = async (req, res) => {
+    try {
+
+        const { name, category, image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors } = req.body
+        const update = await Item.findByIdAndUpdate({ _id: req.params.id }, { name, category, image, description, available, soldBy, price, cost, SKU, composite, inStock, lowStock, variantOptionName, variantOptionValue, spiceLevel, colors }, { new: true })
         await update.save()
         res.send(update)
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 }
 
-exports.getitemById = async(req,res) =>{
-    try{
-      
-        const item = await Item.findById({_id:req.params.id})
-       
-        if(item){
-            const category = await Category.find({name:item.category})
+exports.getitemById = async (req, res) => {
+    try {
+
+        const item = await Item.findById({ _id: req.params.id })
+
+        if (item) {
+            const category = await Category.find({ name: item.category })
             const newlist = {}
             newlist.item = item
             newlist.category = category[0]
-        
+
             res.send(newlist)
         }
-       
-    }catch(err){
+
+    } catch (err) {
         console.log(err)
     }
 }
 
-exports.getCategoryByName = async(req,res)=>{
-    try{
-        const category = await Category.find({name:req.params.name})
-        if(category.length>0){
+exports.getCategoryByName = async (req, res) => {
+    try {
+        const category = await Category.find({ name: req.params.name })
+        if (category.length > 0) {
             res.send(category)
         }
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 }
@@ -213,8 +234,8 @@ exports.getCategoryByName = async(req,res)=>{
 
 // exports.ItemList = async (req, res) => {
 //     try {
-       
-        
+
+
 //         if (req.query.pageNo) {
 //                 const pageNo = req.query.pageNo
 
@@ -233,55 +254,55 @@ exports.getCategoryByName = async(req,res)=>{
 //                 const items = await Item.find({}).limit(10)
 //                 res.send(items)
 //             }
-        
+
 //     } catch (err) {
 //         res.status(400).send(err)
 //     }
 // }
-exports.categoryItems = async(req,res)=>{
-  try {
-    const { id } = req.query
-    const catItems = await Item.find({categoryId:id})
-    console.log(catItems);
-    res.status(200).send({
-      success:true,
-      catItems,
-      message:"Category Items"
-    })
-  } catch (error) {
-    console.error(error);
-      res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
+exports.categoryItems = async (req, res) => {
+    try {
+        const { id } = req.query
+        const catItems = await Item.find({ categoryId: id })
+        console.log(catItems);
+        res.status(200).send({
+            success: true,
+            catItems,
+            message: "Category Items"
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
 }
 
 //Dining options
-exports.createDiningOptions = async(req,res)=>{
-    try{
-        const {name} = req.body
-        const options = await DiningOption.find({name})
-        if(options.length>0){
-            res.send({"message":"Dining option name already exists"})
-        }else{
-            const data = await DiningOption.create({name})
+exports.createDiningOptions = async (req, res) => {
+    try {
+        const { name } = req.body
+        const options = await DiningOption.find({ name })
+        if (options.length > 0) {
+            res.send({ "message": "Dining option name already exists" })
+        } else {
+            const data = await DiningOption.create({ name })
             await data.save()
             res.send(data)
         }
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 }
-exports.getDiningOptions = async(req,res)=>{
-    try{
+exports.getDiningOptions = async (req, res) => {
+    try {
         const options = await DiningOption.find({})
-        if(options.length<0){
-            res.send({"message":"Dining option is empty"})
-        }else{
+        if (options.length < 0) {
+            res.send({ "message": "Dining option is empty" })
+        } else {
             res.send(options)
         }
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 }

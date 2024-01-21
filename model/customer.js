@@ -41,8 +41,18 @@ const customerSchema = new mongoose.Schema({
     },
     note:{
         type:String
+    },
+    totalAmount:{
+        type:Number,
+        default:0
+    },
+    pointBalance:{
+        type:String,
+        default:0
     }
 
+},{
+    timestamps:true
 })
 
 const Customer = mongoose.model("Customer",customerSchema)

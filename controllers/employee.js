@@ -59,14 +59,40 @@ exports.getEmployeeList = async(req,res)=>{
     try{
         const pageNo = req.query.pageNo || 1
         const rowsPerPage = req.query.rowsPerPage || 10
-        const search = req.query.search || ""
+        // const search = req.query.search || ""
         const pagesToSkip = (pageNo - 1)*rowsPerPage
-        const query = {
-            name: { $regex: search, $options: "i" }
-        }
-        const list = await Employee.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(pagesToSkip)
-        res.send(list)
+        // const query = {
+        //     name: { $regex: search, $options: "i" }
+        // }
+       
+
+        const count = (await Employee.find()).length
+        const list = await Employee.find().sort({ updatedAt: -1 }).limit(rowsPerPage).skip(pagesToSkip)
+        const totalPages = Math.floor(count / rowsPerPage) + 1
+
+    res.send({ list, totalPages })
     }catch(err){
+        console.log(err)
+    }
+}
+
+
+exports.deleteManyEmployess = async (req, res) => {
+    try {
+        const arr = []
+        arr.push(req.params.id)
+        console.log(arr)
+        // console.log(arr.split(","))
+        for (var i = 0; i < arr.length; i++) {
+            var split = arr[i].split(",");  // just split once
+            for (var j = 0; j < split.length; j++) {
+                const item = await Employee.findByIdAndDelete({ _id: split[j] })
+
+            }
+        }
+
+        res.send({ "message": "deleted successfully" })
+    } catch (err) {
         console.log(err)
     }
 }
