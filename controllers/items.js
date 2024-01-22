@@ -262,55 +262,55 @@ exports.uploadImg = async (req, res) => {
   }
 };
 
-// exports.ItemList = async (req, res) => {
-//     try {
+exports.ItemList = async (req, res) => {
+    try {
 
-//         if (req.query) {
-//                 const pageNo = req.query.pageNo || 1
-//                 const rowsPerPage = req.query.rowsPerPage || 10
-//                 const category = req.query.category || ""
-//                 const stocks = req.query.stocks || ""
-//                 const search = req.query.search || ""
+        if (req.query) {
+                const pageNo = req.query.pageNo || 1
+                const rowsPerPage = req.query.rowsPerPage || 10
+                const category = req.query.category || ""
+                const stocks = req.query.stocks || ""
+                const search = req.query.search || ""
 
-//                 const query = {
-//                     name: { $regex: search, $options: "i" }
-//                 }
-//                 if(category == "All Items"){
-//                     query.category={$regex:"",$options:"i" }
-//                 }else{
-//                     query.category={$regex:category,$options:"i" }
-//                 }
-//                 if(stocks == "All"){
-//                     query.inStock ={$regex:"",$options:"i" }
-//                 }else{
-//                     query.inStock={$regex:stocks,$options:"i" }
-//                 }
+                const query = {
+                    name: { $regex: search, $options: "i" }
+                }
+                if(category == "All Items"){
+                    query.category={$regex:"",$options:"i" }
+                }else{
+                    query.category={$regex:category,$options:"i" }
+                }
+                if(stocks == "All"){
+                    query.inStock ={$regex:"",$options:"i" }
+                }else{
+                    query.inStock={$regex:stocks,$options:"i" }
+                }
 
-//                 const skipPages = (pageNo - 1) * rowsPerPage
+                const skipPages = (pageNo - 1) * rowsPerPage
 
-//                 if (!pageNo && !rowsPerPage) {
-//                     res.json({ "message": "pageNo and rowsPerPage are required" })
-//                 } else {
+                if (!pageNo && !rowsPerPage) {
+                    res.json({ "message": "pageNo and rowsPerPage are required" })
+                } else {
 
-//                     const count = (await Item.find(query)).length
-//                     const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
-//                     const totalPages =Math.floor( count/rowsPerPage)+1
+                    const count = (await Item.find(query)).length
+                    const list = await Item.find(query).sort({updatedAt:-1}).limit(rowsPerPage).skip(skipPages)
+                    const totalPages =Math.floor( count/rowsPerPage)+1
 
-//                     res.send({list,totalPages})
-//                 }
-//             }else{
-//                 const count = (await Item.find({})).length
-//                 const list = await Item.find({}).limit(10)
-//                 const totalPages = count/10
-//                 res.send({list,totalPages})
-//             }
+                    res.send({list,totalPages})
+                }
+            }else{
+                const count = (await Item.find({})).length
+                const list = await Item.find({}).limit(10)
+                const totalPages = count/10
+                res.send({list,totalPages})
+            }
 
-//     } catch (err) {
-//         res.status(400).send(err)
-//     }
-// }
+    } catch (err) {
+        res.status(400).send(err)
+    }
+}
 
-exports.ItemList = async(req,res)=>{
+exports.ItemListPos = async(req,res)=>{
     try {
         const items = await Item.find()
         if(items){
@@ -512,5 +512,88 @@ exports.categoryItems = async(req,res)=>{
       success: false,
       message: "Internal server error",
     });
+  }
+}
+
+//Dining options
+exports.createDiningOptions = async (req, res) => {
+  try {
+      const { name } = req.body
+      const options = await DiningOption.find({ name })
+      if (options.length > 0) {
+          res.send({ "message": "Dining option name already exists" })
+      } else {
+          const data = await DiningOption.create({ name })
+          await data.save()
+          res.send(data)
+      }
+  } catch (err) {
+      console.log(err)
+  }
+}
+exports.getDiningOptions = async (req, res) => {
+  try {
+      const options = await DiningOption.find({})
+      if (options.length < 0) {
+          res.send({ "message": "Dining option is empty" })
+      } else {
+          res.send(options)
+      }
+  } catch (err) {
+      console.log(err)
+  }
+}
+
+//tax
+
+
+//modifiers
+exports.createModifiers = async (req, res) => {
+  try {
+      const { name,optionName,value } = req.body
+      const options = await Modifier.find({ name })
+      if (options.length > 0) {
+          res.send({ "message": "Modifiers option name already exists" })
+      } else {
+          const data = await Modifier.create({ name })
+          await data.save()
+          res.send(data)
+      }
+  } catch (err) {
+      console.log(err)
+  }
+}
+
+exports.getModifierOptions = async (req, res) => {
+  try {
+      const options = await Modifier.find({})
+      if (options.length < 0) {
+          res.send({ "message": "no Modifiers" })
+      } else {
+          res.send(options)
+      }
+  } catch (err) {
+      console.log(err)
+  }
+}
+
+
+exports.deleteModifiers = async (req, res) => {
+  try {
+      const arr = []
+      arr.push(req.params.id)
+      console.log(arr)
+      // console.log(arr.split(","))
+      for (var i = 0; i < arr.length; i++) {
+          var split = arr[i].split(",");  // just split once
+          for (var j = 0; j < split.length; j++) {
+              const item = await Modifier.findByIdAndDelete({ _id: split[j] })
+
+          }
+      }
+
+      res.send({ "message": "deleted successfully" })
+  } catch (err) {
+      console.log(err)
   }
 }

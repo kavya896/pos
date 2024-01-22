@@ -1,12 +1,13 @@
-const Cart = require("../model/cart.js");
-const Customer = require("../model/cumstomer.js");
+const Cart = require("../model/cart");
+const Customer = require("../model/cumstomer");
 const Item = require("../model/item");
+const Orders = require("../model/order");
 
 let billNumberCounter = 0;
 exports.selectOrderType = async (req, res) => {
   try {
-    const { orderType, tableNumber, name, phone } = req.body;
-    const cart = await Cart.find({is_place_order:false}); 
+    const { orderType, tableNumber, name, phone, customerData } = req.body;
+    const cart = await Cart.find({is_place_order:false});
     if (cart.length > 0) {
       res
         .status(400)
@@ -17,6 +18,23 @@ exports.selectOrderType = async (req, res) => {
         });
     } else {
       billNumberCounter++;
+      if(customerData){
+        const formattedBillNumber = `Tbl ${billNumberCounter.toString().padStart(4, '0')}`;
+      const newCart = await Cart.create({
+        orderType,
+        tableNumber,
+        customer:customerData._id,
+        billNumber:formattedBillNumber
+      });
+      res
+        .status(200)
+        .send({
+          success: true,
+          newCart,
+          customerData,
+          message: "order type created success",
+        });
+      }else{
       const newCustomer = await Customer.create({
         name:name || '',
         phone:phone|| '',
@@ -28,7 +46,6 @@ exports.selectOrderType = async (req, res) => {
         customer:newCustomer._id,
         billNumber:formattedBillNumber
       });
-     
       res
         .status(200)
         .send({
@@ -37,6 +54,7 @@ exports.selectOrderType = async (req, res) => {
           newCustomer,
           message: "order type created success",
         });
+    }
     }
   } catch (error) {
     console.log(error);
@@ -242,7 +260,7 @@ exports.changeQuantity = async (req, res) => {
         {
           $inc: {
             "items.$.quantity": 1,
-            "items.$.price": product.price,
+            "items.$.price": product.price
           },
         }
       );
@@ -321,12 +339,21 @@ exports.cancelCart = async(req,res)=>{
   try {
     const { cartId } = req.body
     if(cartId){
-
-      await Cart.deleteOne({_id:cartId})
-      res.status(200).send({
+      const cart = await Cart.findOne({_id:cartId})
+      if(cart.odrderId){
+        await Orders.deleteOne({_id:cart.odrderId})
+        await Cart.deleteOne({_id:cartId})
+        res.status(200).send({ 
         success: true,
         message: "Cart Canceled",
       });
+      }else{
+        await Cart.deleteOne({_id:cartId})
+        res.status(200).send({ 
+          success: true,
+          message: "Cart Canceled",
+        });
+      }
     }else{
       res.status(400).send({
         success: false,

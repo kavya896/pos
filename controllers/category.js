@@ -26,11 +26,9 @@ exports.categories = async (req, res) => {
     try {
       const {page = 1, limit = 10} = req.query
         const length = await Category.find({}).countDocuments() 
-        console.log(length);
         const skip = (page - 1) * limit
 
         const catList = await Category.find({}).sort({_id: -1}).skip(skip).limit(parseInt(limit))
-        console.log(catList);
         if (catList.length > 0) {
             res.status(200).send({success:true, catList})
         } else {
@@ -142,6 +140,7 @@ exports.editCategory = async (req, res) => {
           const { catId } = req.body
           const isProduct = await Item.find({'category._id':catId})
           if (isProduct.length > 0) {
+            // console.log("kkkkkkkkkkk");
             return res.status(409).send({
               message: 'Category has associated products. Do you want to delete the products and the category?',
               confirmationRequired: true

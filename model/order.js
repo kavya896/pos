@@ -68,6 +68,7 @@ refund:{
   type:Number,
   default: 0
 },
+
   orderStatus: {
     type: String,
   },

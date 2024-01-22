@@ -1,11 +1,13 @@
+const Cart = require("../model/cart");
 const Customer = require("../model/cumstomer");
 
 exports.createCustomer = async (req, res) => {
   try {
     const { name, phone, email, DOB, dateOfAniversary, address, state } = req.body;
     const newVisitDate = new Date();
-    const existCost = await Customer.findOne({ phone: phone });
-    if (existCost) {
+    const cart = await Cart.find({is_place_order:false});
+    const existCust = await Customer.findOne({ phone: phone });
+    if (existCust) {
       await Customer.updateOne(
         { phone: phone },
         {
@@ -13,9 +15,16 @@ exports.createCustomer = async (req, res) => {
           $inc: { totalVisit: 1 },
         }
       );
+      if(cart.length > 0 ){
+        await Cart.updateOne({_id:cart[0]._id},{
+          $set:{
+            customer:existCust._id
+          }
+        })
+      }
       res.status(200).send({
         success: true,
-        existCost,
+        customer:existCust,
         message: "Customer Updated",
       });
     } else {
