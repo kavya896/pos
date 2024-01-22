@@ -6,15 +6,18 @@ const schema = new mongoose.Schema({
         ref:"Employee"
     },
     clockInDate:{
-        type:String
+        type:Date
     },
     clockOutDate:{
-        type:String
+        type:Date
     },
     clockInTime:{
         type:String
     },
     clockOutTime:{
+        type:String
+    },
+    totalTime:{
         type:String
     }
 

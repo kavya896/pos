@@ -63,12 +63,14 @@ const schema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Modifier"
     },
-    variantOptionName:{
-        type:String
-    },
-    variantOptionValue:{
-        type:String
-    },
+    varients:[{
+        variantOptionName:{
+            type:String
+        },
+        variantOptionValue:{
+            type:String
+        }
+    }],
     spiceLevel:{
         type:Boolean,
         default:false
