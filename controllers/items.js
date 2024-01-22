@@ -129,6 +129,7 @@ const Category = require("../model/category");
 const Item = require("../model/item");
 const Stock = require("../model/stocks");
 const cloudinary = require("../utils/cloudinary");
+const Modifier = require("../model/modifiers");
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -548,21 +549,48 @@ exports.getDiningOptions = async (req, res) => {
 
 
 //modifiers
+// exports.createModifiers = async (req, res) => {
+//   try {
+//       const { name,optionName,value } = req.body
+//       console.log(req.body);
+//       const options = await Modifier.find({ name })
+//       if (options.length > 0) {
+//           res.send({ "message": "Modifiers option name already exists" })
+//       } else {
+//           const data = await Modifier.create({ name })
+//           await data.save()
+//           res.send(data)
+//       }
+//   } catch (err) {
+//       console.log(err)
+//   }
+// }
+
 exports.createModifiers = async (req, res) => {
   try {
-      const { name,optionName,value } = req.body
-      const options = await Modifier.find({ name })
-      if (options.length > 0) {
-          res.send({ "message": "Modifiers option name already exists" })
-      } else {
-          const data = await Modifier.create({ name })
-          await data.save()
-          res.send(data)
-      }
+    const { name, options } = req.body;
+
+    const existingModifier = await Modifier.findOne({ name });
+    if (existingModifier) {
+      return res.status(400).send({ message: "Modifier name already exists" });
+    }
+
+    const newModifier = new Modifier({
+      name,
+      optionName: options.map((option) => ({
+        name: option.name,
+        price: parseFloat(option.price),
+      })),
+    });
+
+    const savedModifier = await newModifier.save();
+
+    res.status(201).send(savedModifier);
   } catch (err) {
-      console.log(err)
+    console.error(err);
+    res.status(500).send({ message: "Internal Server Error" });
   }
-}
+};
 
 exports.getModifierOptions = async (req, res) => {
   try {
@@ -578,22 +606,40 @@ exports.getModifierOptions = async (req, res) => {
 }
 
 
+// exports.deleteModifiers = async (req, res) => {
+//   try {
+//       const arr = []
+//       arr.push(req.params.id)
+//       console.log(arr)
+//       // console.log(arr.split(","))
+//       for (var i = 0; i < arr.length; i++) {
+//           var split = arr[i].split(",");  // just split once
+//           for (var j = 0; j < split.length; j++) {
+//               const item = await Modifier.findByIdAndDelete({ _id: split[j] })
+
+//           }
+//       }
+
+//       res.send({ "message": "deleted successfully" })
+//   } catch (err) {
+//       console.log(err)
+//   }
+// }
+
 exports.deleteModifiers = async (req, res) => {
   try {
-      const arr = []
-      arr.push(req.params.id)
-      console.log(arr)
-      // console.log(arr.split(","))
-      for (var i = 0; i < arr.length; i++) {
-          var split = arr[i].split(",");  // just split once
-          for (var j = 0; j < split.length; j++) {
-              const item = await Modifier.findByIdAndDelete({ _id: split[j] })
-
-          }
-      }
-
-      res.send({ "message": "deleted successfully" })
-  } catch (err) {
-      console.log(err)
+    const { id } = req.body
+    await Modifier.deleteMany({ _id: { $in: id } })
+    res.status(200).send({
+      success:true,
+      message:"Modifire Deleted"
+    })
+  } catch (error) {
+    console.log(error);
+          res.status(500).send({
+            success:false,
+            message:"Server error"
+          })
   }
 }
+

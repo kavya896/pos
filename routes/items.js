@@ -90,6 +90,6 @@ router.get('/salesbypayment', getSalesByPaymentMethod)
 
 //modifiers
 router.route("/modifier").post(createModifiers).get(getModifierOptions)
-router.route("/deleteModifiers/:id").get(deleteModifiers)
+router.route("/deleteModifiers").post(deleteModifiers)
 
 module.exports = router
