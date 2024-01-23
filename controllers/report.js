@@ -399,7 +399,7 @@ exports.getSalesSummary = async (req, res) => {
                   else: 'CARD',
                 },
               },
-              paymentType: '$paymentType.cash.method', // Assuming paymentType is an object with a cash property
+              paymentType: '$paymentType.cash.method', 
             },
             totalSales: { $sum: '$grandTotal' },
             totalQuantitySold: { $sum: '$item.quantity' },

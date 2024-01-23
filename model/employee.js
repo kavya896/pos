@@ -34,8 +34,11 @@ const schema = new mongoose.Schema({
     },
     storeName:{
         type:String
+    },
+    accessToken: {
+        token: String,
+        expDate: Date
     }
-
 },{
     timestamps:true
 })

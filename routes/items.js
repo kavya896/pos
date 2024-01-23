@@ -2,14 +2,14 @@ const express = require("express")
 const multer = require('multer');
 const csv = require('csv-parser');
 
-const {Item, ItemList, stocks, categoryList, uploadImg, updateItems, getitemById, deleteItem, uploardCsv, addOnItemList, categoryItems, ItemListPos, createModifiers, getModifierOptions, deleteModifiers } = require("../controllers/items")
+const {Item, ItemList, stocks, categoryList, uploadImg, updateItems, getitemById, deleteItem, uploardCsv, addOnItemList, categoryItems, ItemListPos, createModifiers, getModifierOptions, deleteModifiers, itemsList, deleteManyItems } = require("../controllers/items")
 const { category, editCategory, deleteCategory, getCatDetail, categories, categoryDelete } = require("../controllers/category")
 const { addToCart, updateCart, changeQuantity, cancelCartItem, selectOrderType, getcart, cancelCart } = require("../controllers/cartController")
-const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer } = require("../controllers/customer");
+const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer, customerList, deleteCustomers } = require("../controllers/customer");
 const { order, getOrders, editOrder, getEditOrder, getRunningOrders, billing, getPaidOrders } = require("../controllers/orderController");
 const { createTable, createBooking, getDetailsOfBooking } = require("../controllers/booking");
 const { transactionDetails } = require("../controllers/transaction");
-const { getEmployeeList, deleteEmployee, register, getEmployeeById, createTimecard, getTimecardList, deleteTimecard } = require("../controllers/employee");
+const { getEmployeeList, deleteEmployee, register, getEmployeeById, createTimecard, getTimecardList, deleteTimecard, deleteManyEmployess, accessToken, createAccessRights } = require("../controllers/employee");
 const { getSalesSummary, getSalesByItem, getSalestByCategory, getSalesByEmployee, getSalesSummaryForDay, getSalesDaysSummary, getSalesByPaymentMethod } = require("../controllers/report");
 
 const router = express.Router()
@@ -23,8 +23,10 @@ router.route("/stocks").get(stocks)
 router.route("/uploadImg").post(uploadImg)
 router.route("/updateItem/:id").post(updateItems)
 router.route("/getItemById/:id").get(getitemById)
-router.route("/deleteItem/:id").get(deleteItem)
+router.route("/deleteItem").get(deleteItem)
+router.route("/delete/:id").get(deleteManyItems)
 router.get('/items_pos', ItemListPos)
+// router.get('/items_Lists', itemsList)
 
 // router.post('/itemcsv_upload',upload.single('file'), uploardCsv)
 router.get('/addonitem', addOnItemList)
@@ -47,11 +49,19 @@ router.patch('/cancel_item', cancelCartItem)
 router.post('/cancel_cart', cancelCart)
 
 //customer
+// router.post('/create_customer', createCustomer)
+// router.post('/get_customer', getCustomer)
+// router.get('/get_customerlist', getCustomerList)
+// router.patch('/edit_customer', editCustomer)
+// router.post('/delete_customer', deleteCustomer)
+
 router.post('/create_customer', createCustomer)
 router.post('/get_customer', getCustomer)
 router.get('/get_customerlist', getCustomerList)
 router.patch('/edit_customer', editCustomer)
 router.post('/delete_customer', deleteCustomer)
+router.get("/customers",customerList)
+router.get("/deleteCustomers/:id",deleteCustomers)
 
 //order
 router.post('/place_order', order)
@@ -75,9 +85,13 @@ router.get('/employee', getEmployeeList)
 router.get('/employeeid/:id', getEmployeeById)
 router.post('/employee', register)
 router.post('/delete_employee', deleteEmployee)
+router.route("/deleteEmployees/:id").get(deleteManyEmployess)
+
+// router.route("/timeCard").post(createTimecard).get(getTimecardList)
+// router.route("/deleteTimecard").get(deleteTimecard)
 
 router.route("/timeCard").post(createTimecard).get(getTimecardList)
-router.route("/deleteTimecard").get(deleteTimecard)
+router.route("/deleteTimecard/:id").get(deleteTimecard)
 
 //sales report
 router.get('/salessummary', getSalesSummary)
@@ -91,5 +105,10 @@ router.get('/salesbypayment', getSalesByPaymentMethod)
 //modifiers
 router.route("/modifier").post(createModifiers).get(getModifierOptions)
 router.route("/deleteModifiers").post(deleteModifiers)
+
+router.post('/accestoken', accessToken)
+
+//accessRights
+router.post("/accessPermissions",createAccessRights)
 
 module.exports = router

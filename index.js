@@ -2,12 +2,17 @@ const express = require("express")
 const mongoose = require("mongoose")
 const dotenv = require('dotenv')
 const bodyParser = require('body-parser');
+const fileUpload = require("express-fileupload")
 const app= express()
 const cors = require("cors")
 
 app.use(cors())
 // app.use(express.json())
-app.use(express.json({limit : "10mb"}))
+// app.use(express.json({limit : "10mb"}))
+app.use(express.json({limit: '50mb'}));
+app.use(fileUpload({
+    useTempFiles:true
+}))
 app.use("/api",require("./routes/user"))
 app.use("/api/v1",require("./routes/items"))
 
