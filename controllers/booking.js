@@ -52,18 +52,18 @@ exports.createBooking = async(req,res) =>{
     try{
         const {date,time,name,member,mobileNo,tableNos,note,advance,balance} = req.body
         console.log(date,time,name,member,mobileNo,tableNos,note,advance,balance)
-        // const tableAvailability = await Table.find({tableNo:tableNos})
-        // console.log(tableNo,tableAvailability)
-        // if(tableAvailability[0].available){
-        //     tableAvailability[0].available = false
-        //     await tableAvailability[0].save()
-            const booking = await Booking.create({date,time,customer:name,member,mobileNo,tableNo:tableNos,note,advance,balance})
-        //     await booking.save()
-        //     res.status(200).send(booking)
-        // }else{
-        //     res.status(400).send({"message":"table is already booked"})
-        // }
-        res.status(200).send(booking)
+        const tableAvailability = await Table.find({tableNo:tableNos})
+        console.log(tableNos,tableAvailability)
+        if(tableAvailability){
+            tableAvailability[0].description = "reservered"
+            tableAvailability[0].available = false
+            await tableAvailability[0].save()
+            const booking = await Booking.create({date,time,customer:name,member,mobileNo,tableNo:tableAvailability[0]._id,note,advance,balance})
+            await booking.save()
+            res.status(200).send(booking)
+        }else{
+            res.status(400).send({"message":"table is already booked"})
+        }
     }catch(err){
         console.log(err)
     }

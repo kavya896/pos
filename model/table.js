@@ -7,12 +7,15 @@ const schema = new mongoose.Schema({
         type:String
     },
     description:{
-        type:String
+        type:String,
+        enum:["reservered","unReservered"],
+        default:"unReservered"
     },
     available:{
         type:Boolean,
         default:true
     }
+
 })
 
 const Table = mongoose.model("Table",schema)

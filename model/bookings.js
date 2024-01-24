@@ -2,15 +2,15 @@ const mongoose = require("mongoose")
 const schema = new mongoose.Schema({
     date : {
         type:String,
-        // required:[true,"Booking Date is important"]
+        required:[true,"Booking Date is important"]
     },
     time:{
         type:String,
-        // required:[true,"Booking Time is important"]
+        required:[true,"Booking Time is important"]
     },
     customer:{
         type:String,
-        // required:[true,"name of the customer is mandatory"]
+        required:[true,"name of the customer is mandatory"]
     },
     member:{
         type:String
@@ -19,7 +19,8 @@ const schema = new mongoose.Schema({
         type:String
     },
     tableNo:{
-       type:String
+       type:mongoose.Schema.Types.ObjectId,
+       ref:"Table"
     },
     note:{
         type:String
