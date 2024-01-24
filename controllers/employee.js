@@ -34,7 +34,7 @@ exports.createTimecard = async(req,res)=>{
             console.log(timecard)
             const update = await Employee.findByIdAndUpdate(findEmployee[0]._id,{timeCard:timecard._id},{new:true})
             
-
+            console.log(update)
             res.send(timecard)
         }else{
             res.send({"message":"employee doesn't exist"})
