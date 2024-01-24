@@ -7,7 +7,7 @@ const { category, editCategory, deleteCategory, getCatDetail, categories, catego
 const { addToCart, updateCart, changeQuantity, cancelCartItem, selectOrderType, getcart, cancelCart } = require("../controllers/cartController")
 const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer, customerList, deleteCustomers } = require("../controllers/customer");
 const { order, getOrders, editOrder, getEditOrder, getRunningOrders, billing, getPaidOrders } = require("../controllers/orderController");
-const { createTable, createBooking, getDetailsOfBooking } = require("../controllers/booking");
+const { createTable, createBooking, getDetailsOfBooking, getTableList } = require("../controllers/booking");
 const { transactionDetails } = require("../controllers/transaction");
 const { getEmployeeList, deleteEmployee, register, getEmployeeById, createTimecard, getTimecardList, deleteTimecard, deleteManyEmployess, accessToken, createAccessRights } = require("../controllers/employee");
 const { getSalesSummary, getSalesByItem, getSalestByCategory, getSalesByEmployee, getSalesSummaryForDay, getSalesDaysSummary, getSalesByPaymentMethod, getSalesByTaxTypeAndDate, getAllBillsSummary } = require("../controllers/report");
@@ -72,7 +72,7 @@ router.post('/billing', billing)
 
 
 //bookings
-router.route("/table").post(createTable)
+router.route("/table").post(createTable).get(getTableList)
 router.route("/booking").post(createBooking).get(getDetailsOfBooking)
 
 //transaction
