@@ -10,7 +10,7 @@ const { order, getOrders, editOrder, getEditOrder, getRunningOrders, billing, ge
 const { createTable, createBooking, getDetailsOfBooking, getTableList } = require("../controllers/booking");
 const { transactionDetails } = require("../controllers/transaction");
 const { getEmployeeList, deleteEmployee, register, getEmployeeById, createTimecard, getTimecardList, deleteTimecard, deleteManyEmployess, accessToken, createAccessRights } = require("../controllers/employee");
-const { getSalesSummary, getSalesByItem, getSalestByCategory, getSalesByEmployee, getSalesSummaryForDay, getSalesDaysSummary, getSalesByPaymentMethod } = require("../controllers/report");
+const { getSalesSummary, getSalesByItem, getSalestByCategory, getSalesByEmployee, getSalesSummaryForDay, getSalesDaysSummary, getSalesByPaymentMethod, getSalesByTaxTypeAndDate, getAllBillsSummary } = require("../controllers/report");
 
 const router = express.Router()
 const storage = multer.memoryStorage();
@@ -101,6 +101,8 @@ router.get('/salesbyemployee', getSalesByEmployee)
 router.get('/salessummarybyday', getSalesSummaryForDay)
 router.get('/salesdayssummary', getSalesDaysSummary)
 router.get('/salesbypayment', getSalesByPaymentMethod)
+router.get('/salesbyTxable', getSalesByTaxTypeAndDate)
+router.get('/billsummary', getAllBillsSummary)
 
 //modifiers
 router.route("/modifier").post(createModifiers).get(getModifierOptions)

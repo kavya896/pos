@@ -433,4 +433,129 @@ exports.getSalesSummary = async (req, res) => {
       });
     }
   };
+
+  exports.getSalesByTaxTypeAndDate = async (req, res) => {
+    try {
+      let { date } = req.query;
+      if (!date) {
+        const currentDate = new Date();
+        date = currentDate.toISOString().split('T')[0];
+      }
   
+      const salesByTaxType = await Orders.aggregate([
+        {
+          $match: {
+            paymentStatus: 'Paid',
+            createdAt: {
+              $gte: new Date(`${date}T00:00:00.000Z`),
+              $lt: new Date(`${date}T23:59:59.999Z`),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              date: {
+                $dateToString: { format: '%Y-%m-%d', date: '$createdAt' },
+              },
+              isTaxable: '$isTaxable', // Assuming you have a field isTaxable in your schema
+            },
+            totalSales: { $sum: '$grandTotal' },
+            totalQuantitySold: { $sum: '$item.quantity' },
+            totalGrandTotal: { $sum: '$grandTotal' },
+            totalDiscount: { $sum: '$discount' },
+            totalTax: { $sum: '$tax' },
+            totalRefund: { $sum: '$refund' },
+            netSale: { $sum: { $subtract: [{ $add: ['$grandTotal', '$discount'] }, '$refund'] } },
+            transactionCount: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            date: '$_id.date',
+            isTaxable: '$_id.isTaxable',
+            totalSales: 1,
+            totalQuantitySold: 1,
+            totalGrandTotal: 1,
+            totalDiscount: 1,
+            totalTax: 1,
+            totalRefund: 1,
+            netSale: 1,
+            transactionCount: 1,
+          },
+        },
+        {
+          $sort: {
+            date: 1,
+            isTaxable: 1,
+          },
+        },
+      ]);
+  
+      res.json({
+        success: true,
+        data: salesByTaxType,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
+  };
+  
+  exports.getAllBillsSummary = async (req, res) => {
+    try {
+      const date = req.query.date ? new Date(req.query.date) : new Date(); // Use specified date or current date
+  
+      console.log('Start Date:', date);
+      console.log('End Date:', new Date(date.getTime() + 24 * 60 * 60 * 1000));
+  
+      const ordersInRange = await Orders.find({
+        createdAt: { $gte: date, $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000) },
+      });
+  
+      console.log('Orders within Date Range:', ordersInRange);
+  
+      const billsSummary = await Orders.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: date, $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000) }, // Filter based on date
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalBills: { $sum: 1 },
+            totalSale: { $sum: '$grandTotal' },
+            totalRefund: { $sum: '$refund' },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            totalBills: 1,
+            totalSale: 1,
+            totalRefund: 1,
+          },
+        },
+      ]);
+  
+      console.log('Bills Summary:', billsSummary);
+  
+      res.json({
+        success: true,
+        data: billsSummary[0] || { totalBills: 0, totalSale: 0, totalRefund: 0 },
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
+  };
+  
+    

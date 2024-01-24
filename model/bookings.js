@@ -27,7 +27,7 @@ const schema = new mongoose.Schema({
     },
     advance:{
         type:String
-    },
+    }, 
     balance:{
         type:String
     }
