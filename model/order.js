@@ -113,6 +113,12 @@ refund:{
   paymentStatus: {
     type:String
 },
+amountRecieved:{
+  type:Number
+},
+balanceAmount:{
+  type:Number
+},
 },{
   timestamps: true
 });

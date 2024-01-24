@@ -6,7 +6,7 @@ const {Item, ItemList, stocks, categoryList, uploadImg, updateItems, getitemById
 const { category, editCategory, deleteCategory, getCatDetail, categories, categoryDelete } = require("../controllers/category")
 const { addToCart, updateCart, changeQuantity, cancelCartItem, selectOrderType, getcart, cancelCart } = require("../controllers/cartController")
 const { createCustomer, getCustomer, getCustomerList, editCustomer, deleteCustomer, customerList, deleteCustomers } = require("../controllers/customer");
-const { order, getOrders, editOrder, getEditOrder, getRunningOrders, billing, getPaidOrders } = require("../controllers/orderController");
+const { order, getOrders, editOrder, getEditOrder, getRunningOrders, billing, getPaidOrders, bill } = require("../controllers/orderController");
 const { createTable, createBooking, getDetailsOfBooking, getTableList } = require("../controllers/booking");
 const { transactionDetails } = require("../controllers/transaction");
 const { getEmployeeList, deleteEmployee, register, getEmployeeById, createTimecard, getTimecardList, deleteTimecard, deleteManyEmployess, accessToken, createAccessRights } = require("../controllers/employee");
@@ -112,5 +112,8 @@ router.post('/accestoken', accessToken)
 
 //accessRights
 router.post("/accessPermissions",createAccessRights)
+
+// invoice
+router.get('/bill', bill)
 
 module.exports = router

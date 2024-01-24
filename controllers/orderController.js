@@ -449,3 +449,21 @@ exports.getPaidOrders = async(req,res)=>{
     });
   }
 }
+
+exports.bill = async(req,res)=>{
+  try {
+    const { id } = req.query
+    console.log(id);
+    const bill = await Orders.findOne({_id:id}).populate("item.product").populate("customerId")
+    console.log(bill);
+    res.status(200).send({
+      success: true,
+      bill,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Server error.",
+    });
+  }
+}
