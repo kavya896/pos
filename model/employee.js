@@ -17,6 +17,10 @@ const schema = new mongoose.Schema({
         enum: ["Owner", "Employee"],
         default: "Employee"
     },
+    accessrights:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"AccessPermission"
+    },
     posAcsessRight: {
         type: Boolean,
         default: false
@@ -33,11 +37,15 @@ const schema = new mongoose.Schema({
         type:String
     },
     storeName:{
-        type:String
+        type:String,
+        default:"store"
     },
     accessToken: {
         token: String,
         expDate: Date
+    },
+    password:{
+        type:String
     }
 },{
     timestamps:true

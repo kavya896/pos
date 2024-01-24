@@ -6,12 +6,12 @@ const { generateToken } = require("../middlewares/auth")
 
 exports.register = async(req,res)=>{
     try{
-        const {name,email,phone,role,posAcsessRight,backOfficeRight,totalHours,storename} = req.body
+        const {name,email,phone,role,posAcsessRight,backOfficeRight,totalHours,storename,password} = req.body
         const exists = await Employee.find({email:req.body.email})
         if(exists.length>0){
             res.send({"message":"email already exists"})
         }else{
-            const employee = await Employee.create({name,email,phone,role,posAcsessRight,backOfficeRight,totalHours,storename})
+            const employee = await Employee.create({name,email,phone,role,posAcsessRight,backOfficeRight,totalHours,storename,password})
             await employee.save()
             res.send(employee)
         }
@@ -241,18 +241,27 @@ exports.createAccessRights = async(req,res) =>{
         if(exists){
             var backOfficeAccessRight;
             var posAccessRight;
-            if(pos){
+            if(pos.length>0){
                 posAccessRight = true
-                
-            const update = await Employee.findByIdAndUpdate(exists[0]._id,{posAcsessRight:true},{new:true})
+
+            const update = await Employee.findByIdAndUpdate(exists[0]._id,{posAcsessRight:true,backOfficeRight:false},{new:true})
             }
-            if(backOffice){
+            if(backOffice.length>0){
                 backOfficeAccessRight = true
                 
-            const update = await Employee.findByIdAndUpdate(exists[0]._id,{backOfficeRight:true},{new:true})
+            const update = await Employee.findByIdAndUpdate(exists[0]._id,{backOfficeRight:true,posAcsessRight:false},{new:true})
             }
+            if(pos.length>0 && backOffice.length>0){
+
+                const update = await Employee.findByIdAndUpdate(exists[0]._id,{backOfficeRight:true,posAcsessRight:true},{new:true})
+                }
             const accessPermissions = await AccessPermission.create({name,posAccessRight,pos,backOfficeAccessRight,backOffice})
+            
             await accessPermissions.save()
+            
+                
+            const update = await Employee.findByIdAndUpdate(exists[0]._id,{accessrights:accessPermissions._id},{new:true})
+            
             res.send({"message":"Successful"})
         }else{
             res.send({"message":"name is invalid"})
