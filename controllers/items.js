@@ -1007,7 +1007,7 @@ exports.getCategoryByName = async (req, res) => {
 exports.categoryItems = async (req, res) => {
     try {
         const { id } = req.query
-        const catItems = await Item.find({ categoryId: id })
+        const catItems = await Item.find({ category: id })
         console.log(catItems);
         res.status(200).send({
             success: true,
